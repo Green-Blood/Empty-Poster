@@ -13,9 +13,8 @@ GameObject:
   - component: {fileID: 7185748987455837556}
   - component: {fileID: -2038415080352478763}
   - component: {fileID: 5912422872920668318}
-  - component: {fileID: -6279011810199576214}
   - component: {fileID: 1860054845523102965}
-  - component: {fileID: 8085934679154053300}
+  - component: {fileID: 1198126149739634859}
   m_Layer: 0
   m_Name: EnemyAI
   m_TagString: Untagged
@@ -32,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 615615881580048599}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.33, y: 0.33, z: 0.33}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -79,9 +78,9 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4447904424348394206, guid: 8a1f96c93a153e34a98b5f6dd6bbfebd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 97a0096a5929f544e8741c4c4917b0a7, type: 3}
   m_Color: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.64, y: 0.64}
@@ -100,7 +99,7 @@ Animator:
   m_GameObject: {fileID: 615615881580048599}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 68ab13e5da8642e4793d41c05a0d9ba9, type: 2}
+  m_Controller: {fileID: 9100000, guid: 37225d2e8bf30df49a34043d09362a66, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -159,20 +158,6 @@ MonoBehaviour:
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   graphMask:
     value: -1
---- !u!114 &-6279011810199576214
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 615615881580048599}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9679e68a0f1144e79c664d9a11ca121, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 1
-  target: {fileID: 0}
 --- !u!114 &1860054845523102965
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186,19 +171,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  activateDistance: 5
-  deactivateDistance: 10
+  activateDistance: 10
+  deactivateDistance: 15
   pathUpdateSeconds: 0.5
   speed: 280
   nextWaypointDistance: 0.8
   jumpNodeHeightRequirement: 0.6
-  jumpModifier: 0.4
+  jumpModifier: 0.53
   jumpCheckOffset: 0.1
   followEnabled: 1
   jumpEnabled: 1
   directionLookEnabled: 1
   gameoverDistance: 1
---- !u!70 &8085934679154053300
+--- !u!70 &1198126149739634859
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -211,6 +196,6 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.64, y: 0.64}
+  m_Offset: {x: 0, y: -0.6}
+  m_Size: {x: 2.5, y: 7.28}
   m_Direction: 0

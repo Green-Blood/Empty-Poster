@@ -23,5 +23,7 @@ namespace Character
 
         public void SetTransitionTrigger() => _animator.SetTrigger(TakeSign);
         public void SetChaseTrigger() => _animator.SetTrigger(ChaseStateTrigger);
+
+        public void SetIsFall() => _animator.SetBool("IsFall", true);
     }
 }

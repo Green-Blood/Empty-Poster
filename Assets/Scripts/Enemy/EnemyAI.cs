@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
+using Character;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -33,10 +34,15 @@ public class EnemyAI : MonoBehaviour
     Seeker seeker;
     Rigidbody2D rb;
 
+    Animator animator;
+
+    public CharacterAnimator characterAnimator;
+
     public void Start()
     {
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
         InvokeRepeating("UpdatePath", 0f, pathUpdateSeconds);
     }
@@ -46,11 +52,13 @@ public class EnemyAI : MonoBehaviour
         if (TargetInDistance() && followEnabled)
         {
             PathFollow();
-            if (Vector2.Distance(transform.position, target.transform.position) < gameoverDistance)
+            animator.SetFloat("running", Mathf.Abs(rb.velocity.x));
+            if (followEnabled && Vector2.Distance(transform.position, target.transform.position) < gameoverDistance)
             {
                 // trigger game over (animation)
-                Debug.Log("gameover");
                 followEnabled = false;
+                animator.SetTrigger("hit");
+                characterAnimator.SetIsFall();
             }
         }
     }
