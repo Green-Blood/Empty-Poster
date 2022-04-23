@@ -82,7 +82,15 @@ public class EnemyAI : MonoBehaviour
 
         // Direction Calculation
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-        Vector2 force = direction * speed * Time.deltaTime;
+        Vector2 force;
+        if (direction.x > 0)
+        {
+            force = Vector2.right * speed * Time.deltaTime;
+        }
+        else
+        {
+            force = Vector2.left * speed * Time.deltaTime;
+        }
 
         // Jump
         if (jumpEnabled && isGrounded)
@@ -94,7 +102,10 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Movement
-        rb.AddForce(force);
+        if (Mathf.Abs(rb.velocity.x) < Mathf.Abs(force.x))
+        {
+            rb.AddForce(force);
+        }
 
         // Next Waypoint
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
