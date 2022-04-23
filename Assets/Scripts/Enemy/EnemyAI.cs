@@ -24,6 +24,9 @@ public class EnemyAI : MonoBehaviour
     public bool jumpEnabled = true;
     public bool directionLookEnabled = true;
 
+    [Header("Game Over")]
+    public float gameoverDistance = 1f;
+
     private Path path;
     private int currentWaypoint = 0;
     RaycastHit2D isGrounded;
@@ -43,6 +46,12 @@ public class EnemyAI : MonoBehaviour
         if (TargetInDistance() && followEnabled)
         {
             PathFollow();
+            if (Vector2.Distance(transform.position, target.transform.position) < gameoverDistance)
+            {
+                // trigger game over (animation)
+                Debug.Log("gameover");
+                followEnabled = false;
+            }
         }
     }
 
@@ -73,7 +82,15 @@ public class EnemyAI : MonoBehaviour
 
         // Direction Calculation
         Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-        Vector2 force = direction * speed * Time.deltaTime;
+        Vector2 force;
+        if (direction.x > 0)
+        {
+            force = Vector2.right * speed * Time.deltaTime;
+        }
+        else
+        {
+            force = Vector2.left * speed * Time.deltaTime;
+        }
 
         // Jump
         if (jumpEnabled && isGrounded)
@@ -85,7 +102,10 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Movement
-        rb.AddForce(force);
+        if (Mathf.Abs(rb.velocity.x) < Mathf.Abs(force.x))
+        {
+            rb.AddForce(force);
+        }
 
         // Next Waypoint
         float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
