@@ -1,3 +1,4 @@
+using Infrastructure;
 using UnityEngine;
 
 namespace Character
@@ -6,18 +7,21 @@ namespace Character
     {
         private readonly float _jumpForce;
         private readonly Rigidbody2D _characterRigidBody;
+        private readonly StateMachine _stateMachine;
 
         private const float VelocityMultiplier = .5f;
         private const string JumpButton = "Jump";
 
-        public CharacterJump(float jumpForce, Rigidbody2D characterRigidBody)
+        public CharacterJump(float jumpForce, Rigidbody2D characterRigidBody, StateMachine stateMachine)
         {
             _jumpForce = jumpForce;
             _characterRigidBody = characterRigidBody;
+            _stateMachine = stateMachine;
         }
 
         public void Jump(bool isGrounded)
         {
+            if(_stateMachine.GameState == GameState.Intro) return;
             bool isJumpPressed = Input.GetButtonDown(JumpButton);
 
             if (isJumpPressed && isGrounded)
