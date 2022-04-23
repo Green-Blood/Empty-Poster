@@ -1,4 +1,3 @@
-using System;
 using Infrastructure;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,25 +7,28 @@ namespace Character
     public sealed class CharacterBootstrap : MonoBehaviour
     {
         [TabGroup("Parameters")] [SerializeField]
-        private float moveSpeed;
+        internal float moveSpeedBeforeIntro = 4f;
 
         [TabGroup("Parameters")] [SerializeField]
-        private float jumpForce;
+        internal float moveSpeedAfterIntro = 6f;
 
         [TabGroup("Parameters")] [SerializeField]
-        private LayerMask groundMask;
+        internal float jumpForce;
+
+        [TabGroup("Parameters")] [SerializeField]
+        internal LayerMask groundMask;
 
         [TabGroup("References")] [SerializeField]
-        private Transform groundCheckPoint;
+        internal Transform groundCheckPoint;
 
         [TabGroup("References")] [SerializeField]
-        private Rigidbody2D characterRigidBody;
+        internal Rigidbody2D characterRigidBody;
 
         [TabGroup("References")] [SerializeField]
-        private Animator characterAnimator;
+        internal Animator characterAnimator;
 
         [TabGroup("References")] [SerializeField]
-        private SpriteRenderer characterSprite;
+        internal SpriteRenderer characterSprite;
 
 
         private bool _isGrounded;
@@ -44,7 +46,7 @@ namespace Character
         {
             _currentState = new CharacterIntroState();
             _stateMachine = stateMachine;
-            CharacterMovement = new CharacterMovement(moveSpeed, characterRigidBody);
+            CharacterMovement = new CharacterMovement(moveSpeedBeforeIntro, characterRigidBody);
             CharacterJump = new CharacterJump(jumpForce, characterRigidBody, characterAnimator);
             CharacterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
             CharacterFlip = new CharacterFlip(characterSprite);

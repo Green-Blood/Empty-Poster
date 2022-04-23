@@ -11,6 +11,8 @@ namespace Character
             if (!_isChasing)
             {
                 characterBootstrap.CharacterAnimator.SetChaseTrigger();
+                characterBootstrap.CharacterMovement = new CharacterMovement(characterBootstrap.moveSpeedAfterIntro,
+                    characterBootstrap.characterRigidBody);
                 _isChasing = true;
             }
 
