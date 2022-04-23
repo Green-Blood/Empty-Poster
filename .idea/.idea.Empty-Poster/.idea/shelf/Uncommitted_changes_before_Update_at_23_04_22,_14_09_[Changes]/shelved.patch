@@ -1,0 +1,955 @@
+Index: Assets/Scripts/Character/CharacterBootstrap.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using UnityEngine;\n\nnamespace Character\n{\n    public sealed class CharacterBootstrap : MonoBehaviour\n    {\n        [SerializeField] private Rigidbody2D characterRigidBody;\n        [SerializeField] private float moveSpeed;\n\n        private CharacterMovement _characterMovement;\n\n        public void Init()\n        {\n            _characterMovement = new CharacterMovement(moveSpeed, characterRigidBody);\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/Character/CharacterBootstrap.cs b/Assets/Scripts/Character/CharacterBootstrap.cs
+--- a/Assets/Scripts/Character/CharacterBootstrap.cs	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/Assets/Scripts/Character/CharacterBootstrap.cs	(date 1650704557273)
+@@ -1,17 +1,46 @@
++using System;
++using Sirenix.OdinInspector;
+ using UnityEngine;
+ 
+ namespace Character
+ {
+     public sealed class CharacterBootstrap : MonoBehaviour
+     {
+-        [SerializeField] private Rigidbody2D characterRigidBody;
+-        [SerializeField] private float moveSpeed;
++        [TabGroup("Parameters")] [SerializeField]
++        private float moveSpeed;
++
++        [TabGroup("Parameters")] [SerializeField]
++        private float jumpForce;
++
++        [TabGroup("Parameters")] [SerializeField]
++        private LayerMask groundMask;
++
++        [TabGroup("References")] [SerializeField]
++        private Transform groundCheckPoint;
+ 
+-        private CharacterMovement _characterMovement;
++        [TabGroup("References")] [SerializeField]
++        private Rigidbody2D characterRigidBody;
++
++
++        private bool _isGrounded;
++
++        private IMove _characterMovement;
++        private IJump _characterJump;
++
++        private const float GroundCheckRadius = .2f;
+ 
+         public void Init()
+         {
+             _characterMovement = new CharacterMovement(moveSpeed, characterRigidBody);
++            _characterJump = new CharacterJump(jumpForce, characterRigidBody);
+         }
++
++        private void Update()
++        {
++            _characterMovement.Move();
++            _characterJump.Jump(IsGrounded());
++        }
++
++        private bool IsGrounded() => Physics2D.OverlapCircle(groundCheckPoint.position, GroundCheckRadius, groundMask);
+     }
+ }
+\ No newline at end of file
+Index: Assets/Scripts/CameraFollower.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Cinemachine;\nusing UnityEngine;\n\npublic sealed class CameraFollower : MonoBehaviour\n{\n    [SerializeField] private CinemachineVirtualCamera cinemachineCamera;\n\n    public void FollowAndLookAt(Transform at)\n    {\n        cinemachineCamera.Follow = at;\n        cinemachineCamera.LookAt = at;\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/CameraFollower.cs b/Assets/Scripts/CameraFollower.cs
+--- a/Assets/Scripts/CameraFollower.cs	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/Assets/Scripts/CameraFollower.cs	(date 1650703257750)
+@@ -5,9 +5,8 @@
+ {
+     [SerializeField] private CinemachineVirtualCamera cinemachineCamera;
+ 
+-    public void FollowAndLookAt(Transform at)
++    public void Follow(Transform at)
+     {
+         cinemachineCamera.Follow = at;
+-        cinemachineCamera.LookAt = at;
+     }
+ }
+Index: Assets/Scripts/Infrastructure/Bootstrap.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using Character;\nusing UnityEngine;\n\nnamespace Infrastructure\n{\n    public sealed class Bootstrap : MonoBehaviour\n    {\n        [SerializeField] private CharacterBootstrap character;\n        [SerializeField] private CameraFollower cameraFollower;\n\n        private void Awake()\n        {\n            character.Init();\n            cameraFollower.FollowAndLookAt(character.transform);\n        }\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/Infrastructure/Bootstrap.cs b/Assets/Scripts/Infrastructure/Bootstrap.cs
+--- a/Assets/Scripts/Infrastructure/Bootstrap.cs	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/Assets/Scripts/Infrastructure/Bootstrap.cs	(date 1650703243172)
+@@ -11,7 +11,7 @@
+         private void Awake()
+         {
+             character.Init();
+-            cameraFollower.FollowAndLookAt(character.transform);
++            cameraFollower.Follow(character.transform);
+         }
+     }
+ }
+\ No newline at end of file
+Index: Assets/Scripts/Character/CharacterMovement.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using UnityEngine;\n\nnamespace Character\n{\n    public sealed class CharacterMovement\n    {\n        private readonly float _moveSpeed;\n        private readonly Rigidbody2D _characterRigidBody;\n\n        public CharacterMovement(float moveSpeed, Rigidbody2D characterRigidBody)\n        {\n            _moveSpeed = moveSpeed;\n            _characterRigidBody = characterRigidBody;\n        }\n\n        public void Move()\n        {\n            \n        }\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/Character/CharacterMovement.cs b/Assets/Scripts/Character/CharacterMovement.cs
+--- a/Assets/Scripts/Character/CharacterMovement.cs	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/Assets/Scripts/Character/CharacterMovement.cs	(date 1650704557267)
+@@ -2,11 +2,14 @@
+ 
+ namespace Character
+ {
+-    public sealed class CharacterMovement
++    public sealed class CharacterMovement : IMove
+     {
+         private readonly float _moveSpeed;
+         private readonly Rigidbody2D _characterRigidBody;
+ 
++        private static string HorizontalAxis = "Horizontal";
++
++
+         public CharacterMovement(float moveSpeed, Rigidbody2D characterRigidBody)
+         {
+             _moveSpeed = moveSpeed;
+@@ -15,7 +18,9 @@
+ 
+         public void Move()
+         {
+-            
++            float axis = Input.GetAxisRaw(HorizontalAxis);
++            _characterRigidBody.velocity =
++                new Vector2(axis * _moveSpeed, _characterRigidBody.velocity.y);
+         }
+     }
+-}
++}
+\ No newline at end of file
+Index: .idea/.idea.Empty-Poster/.idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"40ea3e33-6022-4f12-990a-dec10f16656f\" name=\"Changes\" comment=\"\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/.idea.Empty-Poster/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/.idea.Empty-Poster/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays1.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays1.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays2.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays2.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsLightningAnimation.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsLightningAnimation.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsUI_Stormeye.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsUI_Stormeye.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelSquareLightningAnimation.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelSquareLightningAnimation.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsOverlayGradient.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsOverlayGradient.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Back.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Back.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Background.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Background.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Inset.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Inset.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Logo.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Logo.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckBackground.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckBackground.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckSmoke.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckSmoke.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoDustParticles.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoDustParticles.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE1.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE1.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE2.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE2.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlack.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlack.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlackLight.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlackLight.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeWhite.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeWhite.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoF.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoF.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoL.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoL.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth1.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth1.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth2.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth2.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth3.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth3.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth4.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth4.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth5.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth5.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth6.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth6.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth7.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth7.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth8.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth8.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSing.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSing.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSpark.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSpark.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoWind.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoWind.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarCircle.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarCircle.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadial.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadial.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadialOutline.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadialOutline.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUICar.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUICar.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront1.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront1.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront2.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront2.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow1.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow1.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow2.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow2.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees1.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees1.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees2.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees2.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees3.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees3.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBackground.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBackground.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBodyPart.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBodyPart.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeDots.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeDots.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeFood.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeFood.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/_Common/Sprites/MMLogo.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/_Common/Sprites/MMLogo.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemosURP/Strike/Textures/FeelStrikeArrow.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemosURP/Strike/Textures/FeelStrikeArrow.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemo1px.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemo1px.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoFaderMask.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoFaderMask.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoGhost.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoGhost.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowDown.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowDown.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowUp.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowUp.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerButtonBackground.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerButtonBackground.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerDotBackground.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerDotBackground.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackground.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackground.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackgroundUnlocked.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackgroundUnlocked.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementIcon.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementIcon.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMDebugOnScreen/Sprites/MMLogo16x16.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMDebugOnScreen/Sprites/MMLogo16x16.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMFaderRoundMask.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMFaderRoundMask.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMTools_GUI_1x1.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMTools_GUI_1x1.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/LoadingProgressBar.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/LoadingProgressBar.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/MoreMountainsLogo.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/MoreMountainsLogo.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDude.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDude.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDudeHand.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDudeHand.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMTween/Demo/Textures/PlotterAxis.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMTween/Demo/Textures/PlotterAxis.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMVFX/MMPalette/MMLowPolyPalette.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMVFX/MMPalette/MMLowPolyPalette.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/BallDemo/Sprites/NVBall.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/BallDemo/Sprites/NVBall.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCar.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCar.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCarWheel.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCarWheel.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV1x1White.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV1x1White.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Cols.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Cols.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Dots.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Dots.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV7Dots.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV7Dots.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVArrow.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVArrow.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVDottedPattern.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVDottedPattern.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVKnob.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVKnob.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoNice.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoNice.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoVibrations.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoVibrations.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVPaginationDot.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVPaginationDot.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCorners.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCorners.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCornersBig.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCornersBig.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchBackground.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchBackground.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchIndicator.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchIndicator.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchKnob.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchKnob.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVVerticalProgressBar.png.meta\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVVerticalProgressBar.png.meta\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/Assets/_Scenes/SampleScene.unity\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/Assets/_Scenes/SampleScene.unity\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GithubDefaultAccount\">\n    <option name=\"defaultAccountId\" value=\"6f294394-87a7-40bb-95a0-e4388fe65e24\" />\n  </component>\n  <component name=\"HighlightingSettingsPerFile\">\n    <setting file=\"file://$PROJECT_DIR$/Assets/Scripts/CameraFollower.cs\" root0=\"FORCE_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/../../Study/Projects/KnowledgeIsPower/Assets/CodeBase/Infrastructure/Game.cs\" root0=\"SKIP_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/../../Study/Projects/KnowledgeIsPower/Assets/CodeBase/Infrastructure/ICoroutineRunner.cs\" root0=\"SKIP_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/../../Study/Projects/KnowledgeIsPower/Assets/CodeBase/Infrastructure/SceneLoader.cs\" root0=\"SKIP_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/../../Study/Projects/KnowledgeIsPower/Assets/CodeBase/Infrastructure/GameBootstrapper.cs\" root0=\"SKIP_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/../../Study/Projects/KnowledgeIsPower/Assets/CodeBase/Infrastructure/Services/AllServices.cs\" root0=\"SKIP_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/../../Study/Projects/KnowledgeIsPower/Assets/CodeBase/Infrastructure/States/GameStateMachine.cs\" root0=\"SKIP_HIGHLIGHTING\" />\n    <setting file=\"file://$PROJECT_DIR$/../../Study/Projects/KnowledgeIsPower/Assets/CodeBase/Infrastructure/States/BootstrapState.cs\" root0=\"SKIP_HIGHLIGHTING\" />\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProjectId\" id=\"28ABl7DgjdvPLZ78JvjNL5e2aQ2\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">\n    <property name=\"Discover.Launch.Via.Unity\" value=\"true\" />\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\n    <property name=\"nodejs_package_manager_path\" value=\"npm\" />\n    <property name=\"rider.run.widget.enabled.cache\" value=\"false\" />\n    <property name=\"settings.editor.selected.configurable\" value=\"MTConfigurable\" />\n  </component>\n  <component name=\"RunManager\" selected=\"Attach to Unity Editor.Attach to Unity Editor\">\n    <configuration name=\"Attach to Unity Editor &amp; Play\" type=\"UNITY_DEBUG_RUN_CONFIGURATION\" factoryName=\"UNITY_ATTACH_AND_PLAY\" show_console_on_std_err=\"false\" show_console_on_std_out=\"false\" port=\"50000\" address=\"localhost\">\n      <option name=\"allowRunningInParallel\" value=\"false\" />\n      <option name=\"listenPortForConnections\" value=\"false\" />\n      <option name=\"pid\" />\n      <option name=\"projectPathOnTarget\" />\n      <option name=\"selectedOptions\">\n        <list />\n      </option>\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"Attach to Unity Editor\" type=\"UNITY_DEBUG_RUN_CONFIGURATION\" factoryName=\"Unity Debug\" show_console_on_std_err=\"false\" show_console_on_std_out=\"false\" port=\"50000\" address=\"localhost\">\n      <option name=\"allowRunningInParallel\" value=\"false\" />\n      <option name=\"listenPortForConnections\" value=\"false\" />\n      <option name=\"pid\" />\n      <option name=\"projectPathOnTarget\" />\n      <option name=\"selectedOptions\">\n        <list />\n      </option>\n      <method v=\"2\" />\n    </configuration>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"40ea3e33-6022-4f12-990a-dec10f16656f\" name=\"Changes\" comment=\"\" />\n      <created>1650649661314</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1650649661314</updated>\n      <workItem from=\"1650649673812\" duration=\"3692000\" />\n    </task>\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"UnityCheckinConfiguration\" checkUnsavedScenes=\"true\" />\n  <component name=\"UnityProjectConfiguration\" hasMinimizedUI=\"true\" />\n  <component name=\"UnityUnitTestConfiguration\" currentTestLauncher=\"EditMode\" />\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <option name=\"CLEAR_INITIAL_COMMIT_MESSAGE\" value=\"true\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/.idea.Empty-Poster/.idea/workspace.xml b/.idea/.idea.Empty-Poster/.idea/workspace.xml
+--- a/.idea/.idea.Empty-Poster/.idea/workspace.xml	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/.idea/.idea.Empty-Poster/.idea/workspace.xml	(date 1650704970279)
+@@ -1,95 +1,20 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="40ea3e33-6022-4f12-990a-dec10f16656f" name="Changes" comment="">
++    <list default="true" id="40ea3e33-6022-4f12-990a-dec10f16656f" name="Changes" comment="Update: Character base">
++      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IJump.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IJump.cs.meta" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IMove.cs" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IMove.cs.meta" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/.idea.Empty-Poster/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Empty-Poster/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays1.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays2.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsLightningAnimation.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsLightningAnimation.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsUI_Stormeye.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsUI_Stormeye.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelSquareLightningAnimation.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelSquareLightningAnimation.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsOverlayGradient.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsOverlayGradient.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Back.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Back.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Background.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Background.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Inset.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Inset.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Logo.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Logo.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckBackground.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckSmoke.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckSmoke.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoDustParticles.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoDustParticles.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE1.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE2.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlack.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlack.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlackLight.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlackLight.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeWhite.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeWhite.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoF.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoF.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoL.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoL.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth1.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth2.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth3.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth3.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth4.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth4.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth5.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth5.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth6.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth6.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth7.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth7.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth8.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth8.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSing.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSing.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSpark.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSpark.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoWind.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoWind.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarCircle.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarCircle.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadial.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadial.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadialOutline.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadialOutline.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUICar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUICar.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront1.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront2.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow1.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow2.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees1.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees2.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees3.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees3.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBackground.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBodyPart.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBodyPart.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeDots.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeDots.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeFood.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeFood.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/_Common/Sprites/MMLogo.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/_Common/Sprites/MMLogo.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemosURP/Strike/Textures/FeelStrikeArrow.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemosURP/Strike/Textures/FeelStrikeArrow.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemo1px.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemo1px.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoFaderMask.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoFaderMask.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoGhost.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoGhost.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowDown.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowDown.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowUp.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowUp.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerButtonBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerButtonBackground.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerDotBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerDotBackground.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackground.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackgroundUnlocked.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackgroundUnlocked.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementIcon.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementIcon.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMDebugOnScreen/Sprites/MMLogo16x16.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMDebugOnScreen/Sprites/MMLogo16x16.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMFaderRoundMask.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMFaderRoundMask.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMTools_GUI_1x1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMTools_GUI_1x1.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/LoadingProgressBar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/LoadingProgressBar.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/MoreMountainsLogo.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/MoreMountainsLogo.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDude.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDude.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDudeHand.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDudeHand.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMTween/Demo/Textures/PlotterAxis.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMTween/Demo/Textures/PlotterAxis.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMVFX/MMPalette/MMLowPolyPalette.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMVFX/MMPalette/MMLowPolyPalette.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/BallDemo/Sprites/NVBall.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/BallDemo/Sprites/NVBall.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCar.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCarWheel.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCarWheel.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV1x1White.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV1x1White.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Cols.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Cols.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Dots.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Dots.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV7Dots.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV7Dots.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVArrow.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVArrow.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVDottedPattern.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVDottedPattern.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVKnob.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVKnob.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoNice.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoNice.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoVibrations.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoVibrations.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVPaginationDot.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVPaginationDot.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCorners.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCorners.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCornersBig.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCornersBig.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchBackground.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchIndicator.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchIndicator.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchKnob.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchKnob.png.meta" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVVerticalProgressBar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVVerticalProgressBar.png.meta" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Character.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Character.prefab" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Assets/Scripts/CameraFollower.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/CameraFollower.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterBootstrap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterBootstrap.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterMovement.cs" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Infrastructure/Bootstrap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Infrastructure/Bootstrap.cs" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/Assets/_Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/SampleScene.unity" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ProjectSettings/Physics2DSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Physics2DSettings.asset" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -159,8 +84,16 @@
+       <option name="number" value="Default" />
+       <option name="presentableId" value="Default" />
+       <updated>1650649661314</updated>
+-      <workItem from="1650649673812" duration="3692000" />
++      <workItem from="1650649673812" duration="9834000" />
+     </task>
++    <task id="LOCAL-00001" summary="Update: Character base">
++      <created>1650698747432</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1650698747433</updated>
++    </task>
++    <option name="localTasksCounter" value="2" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -182,5 +115,7 @@
+   </component>
+   <component name="VcsManagerConfiguration">
+     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
++    <MESSAGE value="Update: Character base" />
++    <option name="LAST_COMMIT_MESSAGE" value="Update: Character base" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: Assets/_Scenes/SampleScene.unity
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!29 &1\nOcclusionCullingSettings:\n  m_ObjectHideFlags: 0\n  serializedVersion: 2\n  m_OcclusionBakeSettings:\n    smallestOccluder: 5\n    smallestHole: 0.25\n    backfaceThreshold: 100\n  m_SceneGUID: 00000000000000000000000000000000\n  m_OcclusionCullingData: {fileID: 0}\n--- !u!104 &2\nRenderSettings:\n  m_ObjectHideFlags: 0\n  serializedVersion: 9\n  m_Fog: 0\n  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}\n  m_FogMode: 3\n  m_FogDensity: 0.01\n  m_LinearFogStart: 0\n  m_LinearFogEnd: 300\n  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}\n  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}\n  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}\n  m_AmbientIntensity: 1\n  m_AmbientMode: 3\n  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}\n  m_SkyboxMaterial: {fileID: 0}\n  m_HaloStrength: 0.5\n  m_FlareStrength: 1\n  m_FlareFadeSpeed: 3\n  m_HaloTexture: {fileID: 0}\n  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}\n  m_DefaultReflectionMode: 0\n  m_DefaultReflectionResolution: 128\n  m_ReflectionBounces: 1\n  m_ReflectionIntensity: 1\n  m_CustomReflection: {fileID: 0}\n  m_Sun: {fileID: 0}\n  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}\n  m_UseRadianceAmbientProbe: 0\n--- !u!157 &3\nLightmapSettings:\n  m_ObjectHideFlags: 0\n  serializedVersion: 12\n  m_GIWorkflowMode: 1\n  m_GISettings:\n    serializedVersion: 2\n    m_BounceScale: 1\n    m_IndirectOutputScale: 1\n    m_AlbedoBoost: 1\n    m_EnvironmentLightingMode: 0\n    m_EnableBakedLightmaps: 0\n    m_EnableRealtimeLightmaps: 0\n  m_LightmapEditorSettings:\n    serializedVersion: 12\n    m_Resolution: 2\n    m_BakeResolution: 40\n    m_AtlasSize: 1024\n    m_AO: 0\n    m_AOMaxDistance: 1\n    m_CompAOExponent: 1\n    m_CompAOExponentDirect: 0\n    m_ExtractAmbientOcclusion: 0\n    m_Padding: 2\n    m_LightmapParameters: {fileID: 0}\n    m_LightmapsBakeMode: 1\n    m_TextureCompression: 1\n    m_FinalGather: 0\n    m_FinalGatherFiltering: 1\n    m_FinalGatherRayCount: 256\n    m_ReflectionCompression: 2\n    m_MixedBakeMode: 2\n    m_BakeBackend: 0\n    m_PVRSampling: 1\n    m_PVRDirectSampleCount: 32\n    m_PVRSampleCount: 500\n    m_PVRBounces: 2\n    m_PVREnvironmentSampleCount: 500\n    m_PVREnvironmentReferencePointCount: 2048\n    m_PVRFilteringMode: 2\n    m_PVRDenoiserTypeDirect: 0\n    m_PVRDenoiserTypeIndirect: 0\n    m_PVRDenoiserTypeAO: 0\n    m_PVRFilterTypeDirect: 0\n    m_PVRFilterTypeIndirect: 0\n    m_PVRFilterTypeAO: 0\n    m_PVREnvironmentMIS: 0\n    m_PVRCulling: 1\n    m_PVRFilteringGaussRadiusDirect: 1\n    m_PVRFilteringGaussRadiusIndirect: 5\n    m_PVRFilteringGaussRadiusAO: 2\n    m_PVRFilteringAtrousPositionSigmaDirect: 0.5\n    m_PVRFilteringAtrousPositionSigmaIndirect: 2\n    m_PVRFilteringAtrousPositionSigmaAO: 1\n    m_ExportTrainingData: 0\n    m_TrainingDataDestination: TrainingData\n    m_LightProbeSampleCountMultiplier: 4\n  m_LightingDataAsset: {fileID: 0}\n  m_LightingSettings: {fileID: 0}\n--- !u!196 &4\nNavMeshSettings:\n  serializedVersion: 2\n  m_ObjectHideFlags: 0\n  m_BuildSettings:\n    serializedVersion: 2\n    agentTypeID: 0\n    agentRadius: 0.5\n    agentHeight: 2\n    agentSlope: 45\n    agentClimb: 0.4\n    ledgeDropHeight: 0\n    maxJumpAcrossDistance: 0\n    minRegionArea: 2\n    manualCellSize: 0\n    cellSize: 0.16666667\n    manualTileSize: 0\n    tileSize: 256\n    accuratePlacement: 0\n    maxJobWorkers: 0\n    preserveTilesOutsideBounds: 0\n    debug:\n      m_Flags: 0\n  m_NavMeshData: {fileID: 0}\n--- !u!1 &45360513\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 45360514}\n  - component: {fileID: 45360516}\n  - component: {fileID: 45360515}\n  m_Layer: 0\n  m_Name: Square\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &45360514\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 45360513}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n  m_LocalPosition: {x: -5.3055, y: -7.69, z: 0}\n  m_LocalScale: {x: 69.57232, y: 11.2321, z: 11.2321}\n  m_ConstrainProportionsScale: 0\n  m_Children: []\n  m_Father: {fileID: 1858692632}\n  m_RootOrder: 0\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!61 &45360515\nBoxCollider2D:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 45360513}\n  m_Enabled: 1\n  m_Density: 1\n  m_Material: {fileID: 0}\n  m_IsTrigger: 0\n  m_UsedByEffector: 0\n  m_UsedByComposite: 0\n  m_Offset: {x: 0, y: 0}\n  m_SpriteTilingProperty:\n    border: {x: 0, y: 0, z: 0, w: 0}\n    pivot: {x: 0.5, y: 0.5}\n    oldSize: {x: 1, y: 1}\n    newSize: {x: 1, y: 1}\n    adaptiveTilingThreshold: 0.5\n    drawMode: 0\n    adaptiveTiling: 0\n  m_AutoTiling: 0\n  serializedVersion: 2\n  m_Size: {x: 1, y: 1}\n  m_EdgeRadius: 0\n--- !u!212 &45360516\nSpriteRenderer:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 45360513}\n  m_Enabled: 1\n  m_CastShadows: 0\n  m_ReceiveShadows: 0\n  m_DynamicOccludee: 1\n  m_StaticShadowCaster: 0\n  m_MotionVectors: 1\n  m_LightProbeUsage: 1\n  m_ReflectionProbeUsage: 1\n  m_RayTracingMode: 0\n  m_RayTraceProcedural: 0\n  m_RenderingLayerMask: 1\n  m_RendererPriority: 0\n  m_Materials:\n  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}\n  m_StaticBatchInfo:\n    firstSubMesh: 0\n    subMeshCount: 0\n  m_StaticBatchRoot: {fileID: 0}\n  m_ProbeAnchor: {fileID: 0}\n  m_LightProbeVolumeOverride: {fileID: 0}\n  m_ScaleInLightmap: 1\n  m_ReceiveGI: 1\n  m_PreserveUVs: 0\n  m_IgnoreNormalsForChartDetection: 0\n  m_ImportantGI: 0\n  m_StitchLightmapSeams: 1\n  m_SelectedEditorRenderState: 0\n  m_MinimumChartSize: 4\n  m_AutoUVMaxDistance: 0.5\n  m_AutoUVMaxAngle: 89\n  m_LightmapParameters: {fileID: 0}\n  m_SortingLayerID: 0\n  m_SortingLayer: 0\n  m_SortingOrder: 0\n  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}\n  m_Color: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}\n  m_FlipX: 0\n  m_FlipY: 0\n  m_DrawMode: 0\n  m_Size: {x: 1, y: 1}\n  m_AdaptiveModeThreshold: 0.5\n  m_SpriteTileMode: 0\n  m_WasSpriteAssigned: 1\n  m_MaskInteraction: 0\n  m_SpriteSortPoint: 0\n--- !u!1 &411614789\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 411614790}\n  m_Layer: 0\n  m_Name: Cameras--------------\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &411614790\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 411614789}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n  m_LocalPosition: {x: 0, y: 0, z: 0}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children:\n  - {fileID: 519420032}\n  - {fileID: 1088977233}\n  m_Father: {fileID: 0}\n  m_RootOrder: 0\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!1 &519420028\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 519420032}\n  - component: {fileID: 519420031}\n  - component: {fileID: 519420029}\n  - component: {fileID: 519420033}\n  m_Layer: 0\n  m_Name: Main Camera\n  m_TagString: MainCamera\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!81 &519420029\nAudioListener:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 519420028}\n  m_Enabled: 1\n--- !u!20 &519420031\nCamera:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 519420028}\n  m_Enabled: 1\n  serializedVersion: 2\n  m_ClearFlags: 2\n  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}\n  m_projectionMatrixMode: 1\n  m_GateFitMode: 2\n  m_FOVAxisMode: 0\n  m_SensorSize: {x: 36, y: 24}\n  m_LensShift: {x: 0, y: 0}\n  m_FocalLength: 50\n  m_NormalizedViewPortRect:\n    serializedVersion: 2\n    x: 0\n    y: 0\n    width: 1\n    height: 1\n  near clip plane: 0.3\n  far clip plane: 1000\n  field of view: 70\n  orthographic: 0\n  orthographic size: 5\n  m_Depth: -1\n  m_CullingMask:\n    serializedVersion: 2\n    m_Bits: 4294967295\n  m_RenderingPath: -1\n  m_TargetTexture: {fileID: 0}\n  m_TargetDisplay: 0\n  m_TargetEye: 0\n  m_HDR: 1\n  m_AllowMSAA: 0\n  m_AllowDynamicResolution: 0\n  m_ForceIntoRT: 0\n  m_OcclusionCulling: 0\n  m_StereoConvergence: 10\n  m_StereoSeparation: 0.022\n--- !u!4 &519420032\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 519420028}\n  m_LocalRotation: {x: -5.04871e-29, y: 5.04871e-29, z: -0, w: 1}\n  m_LocalPosition: {x: 0, y: -0.87, z: -10}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children: []\n  m_Father: {fileID: 411614790}\n  m_RootOrder: 0\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!114 &519420033\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 519420028}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n  m_ShowDebugText: 0\n  m_ShowCameraFrustum: 1\n  m_IgnoreTimeScale: 0\n  m_WorldUpOverride: {fileID: 0}\n  m_UpdateMethod: 2\n  m_BlendUpdateMethod: 1\n  m_DefaultBlend:\n    m_Style: 1\n    m_Time: 2\n    m_CustomCurve:\n      serializedVersion: 2\n      m_Curve: []\n      m_PreInfinity: 2\n      m_PostInfinity: 2\n      m_RotationOrder: 4\n  m_CustomBlends: {fileID: 0}\n  m_CameraCutEvent:\n    m_PersistentCalls:\n      m_Calls: []\n  m_CameraActivatedEvent:\n    m_PersistentCalls:\n      m_Calls: []\n--- !u!1001 &872832846\nPrefabInstance:\n  m_ObjectHideFlags: 0\n  serializedVersion: 2\n  m_Modification:\n    m_TransformParent: {fileID: 0}\n    m_Modifications:\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_RootOrder\n      value: 4\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalPosition.x\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalPosition.y\n      value: -0.87\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalPosition.z\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalRotation.w\n      value: 1\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalRotation.x\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalRotation.y\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalRotation.z\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalEulerAnglesHint.x\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalEulerAnglesHint.y\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_LocalEulerAnglesHint.z\n      value: 0\n      objectReference: {fileID: 0}\n    - target: {fileID: 4972190345774320963, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n      propertyPath: m_Name\n      value: Character\n      objectReference: {fileID: 0}\n    m_RemovedComponents: []\n  m_SourcePrefab: {fileID: 100100000, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n--- !u!114 &872832847 stripped\nMonoBehaviour:\n  m_CorrespondingSourceObject: {fileID: 70017987537348096, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n  m_PrefabInstance: {fileID: 872832846}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 0}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 189f7786eceb345ec9c7cbd120201f1b, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n--- !u!4 &931752187 stripped\nTransform:\n  m_CorrespondingSourceObject: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}\n  m_PrefabInstance: {fileID: 872832846}\n  m_PrefabAsset: {fileID: 0}\n--- !u!1 &1021560252\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 1021560253}\n  m_Layer: 0\n  m_Name: Scripts----------------\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &1021560253\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1021560252}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n  m_LocalPosition: {x: 0, y: 0, z: 0}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children:\n  - {fileID: 706855304244687831}\n  m_Father: {fileID: 0}\n  m_RootOrder: 3\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!1 &1088977232\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 1088977233}\n  - component: {fileID: 1088977234}\n  - component: {fileID: 1088977235}\n  m_Layer: 0\n  m_Name: CM vcam1\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &1088977233\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1088977232}\n  m_LocalRotation: {x: -5.04871e-29, y: 5.04871e-29, z: -0, w: 1}\n  m_LocalPosition: {x: 0, y: -0.87, z: -10}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children:\n  - {fileID: 1516661748}\n  m_Father: {fileID: 411614790}\n  m_RootOrder: 1\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!114 &1088977234\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1088977232}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n  m_ExcludedPropertiesInInspector:\n  - m_Script\n  m_LockStageInInspector: \n  m_StreamingVersion: 20170927\n  m_Priority: 10\n  m_StandbyUpdate: 2\n  m_LookAt: {fileID: 931752187}\n  m_Follow: {fileID: 931752187}\n  m_Lens:\n    FieldOfView: 70\n    OrthographicSize: 5\n    NearClipPlane: 0.3\n    FarClipPlane: 1000\n    Dutch: 0\n    ModeOverride: 0\n    LensShift: {x: 0, y: 0}\n    GateFit: 2\n    m_SensorSize: {x: 1.7801725, y: 1}\n  m_Transitions:\n    m_BlendHint: 0\n    m_InheritPosition: 0\n    m_OnCameraLive:\n      m_PersistentCalls:\n        m_Calls: []\n  m_LegacyBlendHint: 0\n  m_ComponentOwner: {fileID: 1516661748}\n--- !u!114 &1088977235\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1088977232}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 5626a72f843814b39bce86b1a6a7c8f7, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n  cinemachineCamera: {fileID: 1088977234}\n--- !u!1 &1516661747\nGameObject:\n  m_ObjectHideFlags: 3\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 1516661748}\n  - component: {fileID: 1516661751}\n  - component: {fileID: 1516661750}\n  - component: {fileID: 1516661749}\n  m_Layer: 0\n  m_Name: cm\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &1516661748\nTransform:\n  m_ObjectHideFlags: 3\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1516661747}\n  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}\n  m_LocalPosition: {x: 0.7890635, y: -0.9878708, z: 20.031624}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children: []\n  m_Father: {fileID: 1088977233}\n  m_RootOrder: 0\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!114 &1516661749\nMonoBehaviour:\n  m_ObjectHideFlags: 3\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1516661747}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: fa7155796051b734daa718462081dc5f, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n  m_BindingMode: 1\n  m_FollowOffset: {x: 0, y: 0, z: -10}\n  m_XDamping: 1\n  m_YDamping: 1\n  m_ZDamping: 1\n  m_AngularDampingMode: 0\n  m_PitchDamping: 0\n  m_YawDamping: 0\n  m_RollDamping: 0\n  m_AngularDamping: 0\n--- !u!114 &1516661750\nMonoBehaviour:\n  m_ObjectHideFlags: 3\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1516661747}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: f4044717213e31446939f7bd49c896ea, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n  m_TrackedObjectOffset: {x: 0, y: 0, z: 0}\n  m_LookaheadTime: 0.1\n  m_LookaheadSmoothing: 0.7\n  m_LookaheadIgnoreY: 0\n  m_HorizontalDamping: 0.5\n  m_VerticalDamping: 0.5\n  m_ScreenX: 0.5\n  m_ScreenY: 0.5\n  m_DeadZoneWidth: 0\n  m_DeadZoneHeight: 0\n  m_SoftZoneWidth: 0.8\n  m_SoftZoneHeight: 0.8\n  m_BiasX: 0\n  m_BiasY: 0\n  m_CenterOnActivate: 1\n--- !u!114 &1516661751\nMonoBehaviour:\n  m_ObjectHideFlags: 3\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1516661747}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n--- !u!1 &1658308372\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 706855304244687831}\n  - component: {fileID: 706855304244687832}\n  m_Layer: 0\n  m_Name: Bootstrap\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!1 &1850122911\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 1850122912}\n  m_Layer: 0\n  m_Name: SpawnPoint\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &1850122912\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1850122911}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n  m_LocalPosition: {x: -0.34, y: -1.74, z: 0}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children: []\n  m_Father: {fileID: 0}\n  m_RootOrder: 1\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!1 &1858692631\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 1858692632}\n  m_Layer: 0\n  m_Name: Background\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &1858692632\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1858692631}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n  m_LocalPosition: {x: 0, y: 0, z: 0}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children:\n  - {fileID: 45360514}\n  m_Father: {fileID: 0}\n  m_RootOrder: 2\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!4 &706855304244687831\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1658308372}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n  m_LocalPosition: {x: 0, y: 0, z: 0}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children: []\n  m_Father: {fileID: 1021560253}\n  m_RootOrder: 0\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!114 &706855304244687832\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 1658308372}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: f28fce980da31466383dd01605396ede, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n  character: {fileID: 872832847}\n  cameraFollower: {fileID: 1088977235}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/_Scenes/SampleScene.unity b/Assets/_Scenes/SampleScene.unity
+--- a/Assets/_Scenes/SampleScene.unity	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/Assets/_Scenes/SampleScene.unity	(date 1650704745953)
+@@ -134,7 +134,7 @@
+   - component: {fileID: 45360514}
+   - component: {fileID: 45360516}
+   - component: {fileID: 45360515}
+-  m_Layer: 0
++  m_Layer: 6
+   m_Name: Square
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+@@ -225,6 +225,174 @@
+   m_SortingOrder: 0
+   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+   m_Color: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!1 &244955328
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 244955329}
++  - component: {fileID: 244955330}
++  m_Layer: 0
++  m_Name: Square (2)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &244955329
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 244955328}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 11.75, y: 2.69, z: 0.84}
++  m_LocalScale: {x: 4.1069, y: 3.6466, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1858692632}
++  m_RootOrder: 2
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!212 &244955330
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 244955328}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!1 &352311785
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 352311786}
++  - component: {fileID: 352311787}
++  m_Layer: 0
++  m_Name: Square (5)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &352311786
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 352311785}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: -31.08, y: 3.1604, z: 0.84}
++  m_LocalScale: {x: -14.427261, y: 15.247592, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1858692632}
++  m_RootOrder: 5
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!212 &352311787
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 352311785}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
+   m_FlipX: 0
+   m_FlipY: 0
+   m_DrawMode: 0
+@@ -543,7 +711,7 @@
+   m_StreamingVersion: 20170927
+   m_Priority: 10
+   m_StandbyUpdate: 2
+-  m_LookAt: {fileID: 931752187}
++  m_LookAt: {fileID: 0}
+   m_Follow: {fileID: 931752187}
+   m_Lens:
+     FieldOfView: 70
+@@ -576,6 +744,174 @@
+   m_Name: 
+   m_EditorClassIdentifier: 
+   cinemachineCamera: {fileID: 1088977234}
++--- !u!1 &1123230640
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 1123230641}
++  - component: {fileID: 1123230642}
++  m_Layer: 0
++  m_Name: Square (4)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &1123230641
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1123230640}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: -16.747, y: 0.9385, z: 0.84}
++  m_LocalScale: {x: -6.7870636, y: 5.7683926, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1858692632}
++  m_RootOrder: 4
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!212 &1123230642
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1123230640}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
++--- !u!1 &1383473556
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 1383473557}
++  - component: {fileID: 1383473558}
++  m_Layer: 0
++  m_Name: Square (3)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &1383473557
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1383473556}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 20.8, y: 5.2, z: 0.84}
++  m_LocalScale: {x: 4.1069, y: 13.691889, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1858692632}
++  m_RootOrder: 3
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!212 &1383473558
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1383473556}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
+ --- !u!1 &1516661747
+ GameObject:
+   m_ObjectHideFlags: 3
+@@ -688,6 +1024,90 @@
+   m_NavMeshLayer: 0
+   m_StaticEditorFlags: 0
+   m_IsActive: 1
++--- !u!1 &1682118763
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 1682118764}
++  - component: {fileID: 1682118765}
++  m_Layer: 0
++  m_Name: Square (1)
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &1682118764
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1682118763}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 5.5034, y: -0.3167, z: 0.84}
++  m_LocalScale: {x: 4.1069, y: 3.6466, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 1858692632}
++  m_RootOrder: 1
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
++--- !u!212 &1682118765
++SpriteRenderer:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 1682118763}
++  m_Enabled: 1
++  m_CastShadows: 0
++  m_ReceiveShadows: 0
++  m_DynamicOccludee: 1
++  m_StaticShadowCaster: 0
++  m_MotionVectors: 1
++  m_LightProbeUsage: 1
++  m_ReflectionProbeUsage: 1
++  m_RayTracingMode: 0
++  m_RayTraceProcedural: 0
++  m_RenderingLayerMask: 1
++  m_RendererPriority: 0
++  m_Materials:
++  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
++  m_StaticBatchInfo:
++    firstSubMesh: 0
++    subMeshCount: 0
++  m_StaticBatchRoot: {fileID: 0}
++  m_ProbeAnchor: {fileID: 0}
++  m_LightProbeVolumeOverride: {fileID: 0}
++  m_ScaleInLightmap: 1
++  m_ReceiveGI: 1
++  m_PreserveUVs: 0
++  m_IgnoreNormalsForChartDetection: 0
++  m_ImportantGI: 0
++  m_StitchLightmapSeams: 1
++  m_SelectedEditorRenderState: 0
++  m_MinimumChartSize: 4
++  m_AutoUVMaxDistance: 0.5
++  m_AutoUVMaxAngle: 89
++  m_LightmapParameters: {fileID: 0}
++  m_SortingLayerID: 0
++  m_SortingLayer: 0
++  m_SortingOrder: 0
++  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
++  m_Color: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
++  m_FlipX: 0
++  m_FlipY: 0
++  m_DrawMode: 0
++  m_Size: {x: 1, y: 1}
++  m_AdaptiveModeThreshold: 0.5
++  m_SpriteTileMode: 0
++  m_WasSpriteAssigned: 1
++  m_MaskInteraction: 0
++  m_SpriteSortPoint: 0
+ --- !u!1 &1850122911
+ GameObject:
+   m_ObjectHideFlags: 0
+@@ -728,7 +1148,7 @@
+   serializedVersion: 6
+   m_Component:
+   - component: {fileID: 1858692632}
+-  m_Layer: 0
++  m_Layer: 6
+   m_Name: Background
+   m_TagString: Untagged
+   m_Icon: {fileID: 0}
+@@ -748,6 +1168,11 @@
+   m_ConstrainProportionsScale: 0
+   m_Children:
+   - {fileID: 45360514}
++  - {fileID: 1682118764}
++  - {fileID: 244955329}
++  - {fileID: 1383473557}
++  - {fileID: 1123230641}
++  - {fileID: 352311786}
+   m_Father: {fileID: 0}
+   m_RootOrder: 2
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+Index: Assets/Scripts/Character/IMove.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/Character/IMove.cs b/Assets/Scripts/Character/IMove.cs
+new file mode 100644
+--- /dev/null	(date 1650704478974)
++++ b/Assets/Scripts/Character/IMove.cs	(date 1650704478974)
+@@ -0,0 +1,7 @@
++namespace Character
++{
++    public interface IMove
++    {
++        void Move();
++    }
++}
+\ No newline at end of file
+Index: Assets/Scripts/Character/IJump.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/Character/IJump.cs b/Assets/Scripts/Character/IJump.cs
+new file mode 100644
+--- /dev/null	(date 1650704456332)
++++ b/Assets/Scripts/Character/IJump.cs	(date 1650704456332)
+@@ -0,0 +1,7 @@
++namespace Character
++{
++    public interface IJump
++    {
++        void Jump(bool isGrounded);
++    }
++}
+\ No newline at end of file
+Index: Assets/Scripts/Character/IJump.cs.meta
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/Character/IJump.cs.meta b/Assets/Scripts/Character/IJump.cs.meta
+new file mode 100644
+--- /dev/null	(date 1650704456498)
++++ b/Assets/Scripts/Character/IJump.cs.meta	(date 1650704456498)
+@@ -0,0 +1,3 @@
++fileFormatVersion: 2
++guid: d06ef69454ad448a992c14150e45c7d7
++timeCreated: 1650704456
+\ No newline at end of file
+Index: Assets/Prefabs/Character.prefab
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!1 &4972190345774320963\nGameObject:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  serializedVersion: 6\n  m_Component:\n  - component: {fileID: 4972190345774320961}\n  - component: {fileID: 4972190345774320962}\n  - component: {fileID: 4675874897210873577}\n  - component: {fileID: 2498933030712018395}\n  - component: {fileID: 70017987537348096}\n  m_Layer: 0\n  m_Name: Character\n  m_TagString: Untagged\n  m_Icon: {fileID: 0}\n  m_NavMeshLayer: 0\n  m_StaticEditorFlags: 0\n  m_IsActive: 1\n--- !u!4 &4972190345774320961\nTransform:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 4972190345774320963}\n  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}\n  m_LocalPosition: {x: 0, y: 0, z: 0}\n  m_LocalScale: {x: 1, y: 1, z: 1}\n  m_ConstrainProportionsScale: 0\n  m_Children: []\n  m_Father: {fileID: 0}\n  m_RootOrder: 0\n  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}\n--- !u!212 &4972190345774320962\nSpriteRenderer:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 4972190345774320963}\n  m_Enabled: 1\n  m_CastShadows: 0\n  m_ReceiveShadows: 0\n  m_DynamicOccludee: 1\n  m_StaticShadowCaster: 0\n  m_MotionVectors: 1\n  m_LightProbeUsage: 1\n  m_ReflectionProbeUsage: 1\n  m_RayTracingMode: 0\n  m_RayTraceProcedural: 0\n  m_RenderingLayerMask: 1\n  m_RendererPriority: 0\n  m_Materials:\n  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}\n  m_StaticBatchInfo:\n    firstSubMesh: 0\n    subMeshCount: 0\n  m_StaticBatchRoot: {fileID: 0}\n  m_ProbeAnchor: {fileID: 0}\n  m_LightProbeVolumeOverride: {fileID: 0}\n  m_ScaleInLightmap: 1\n  m_ReceiveGI: 1\n  m_PreserveUVs: 0\n  m_IgnoreNormalsForChartDetection: 0\n  m_ImportantGI: 0\n  m_StitchLightmapSeams: 1\n  m_SelectedEditorRenderState: 0\n  m_MinimumChartSize: 4\n  m_AutoUVMaxDistance: 0.5\n  m_AutoUVMaxAngle: 89\n  m_LightmapParameters: {fileID: 0}\n  m_SortingLayerID: 0\n  m_SortingLayer: 0\n  m_SortingOrder: 0\n  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}\n  m_Color: {r: 1, g: 1, b: 1, a: 1}\n  m_FlipX: 0\n  m_FlipY: 0\n  m_DrawMode: 0\n  m_Size: {x: 1, y: 2}\n  m_AdaptiveModeThreshold: 0.5\n  m_SpriteTileMode: 0\n  m_WasSpriteAssigned: 1\n  m_MaskInteraction: 0\n  m_SpriteSortPoint: 0\n--- !u!50 &4675874897210873577\nRigidbody2D:\n  serializedVersion: 4\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 4972190345774320963}\n  m_BodyType: 0\n  m_Simulated: 1\n  m_UseFullKinematicContacts: 0\n  m_UseAutoMass: 0\n  m_Mass: 1\n  m_LinearDrag: 0\n  m_AngularDrag: 0.05\n  m_GravityScale: 1\n  m_Material: {fileID: 0}\n  m_Interpolate: 0\n  m_SleepingMode: 1\n  m_CollisionDetection: 0\n  m_Constraints: 0\n--- !u!61 &2498933030712018395\nBoxCollider2D:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 4972190345774320963}\n  m_Enabled: 1\n  m_Density: 1\n  m_Material: {fileID: 0}\n  m_IsTrigger: 0\n  m_UsedByEffector: 0\n  m_UsedByComposite: 0\n  m_Offset: {x: 0, y: 0}\n  m_SpriteTilingProperty:\n    border: {x: 0, y: 0, z: 0, w: 0}\n    pivot: {x: 0.5, y: 0.5}\n    oldSize: {x: 1, y: 2}\n    newSize: {x: 1, y: 2}\n    adaptiveTilingThreshold: 0.5\n    drawMode: 0\n    adaptiveTiling: 0\n  m_AutoTiling: 0\n  serializedVersion: 2\n  m_Size: {x: 1, y: 2}\n  m_EdgeRadius: 0\n--- !u!114 &70017987537348096\nMonoBehaviour:\n  m_ObjectHideFlags: 0\n  m_CorrespondingSourceObject: {fileID: 0}\n  m_PrefabInstance: {fileID: 0}\n  m_PrefabAsset: {fileID: 0}\n  m_GameObject: {fileID: 4972190345774320963}\n  m_Enabled: 1\n  m_EditorHideFlags: 0\n  m_Script: {fileID: 11500000, guid: 189f7786eceb345ec9c7cbd120201f1b, type: 3}\n  m_Name: \n  m_EditorClassIdentifier: \n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Prefabs/Character.prefab b/Assets/Prefabs/Character.prefab
+--- a/Assets/Prefabs/Character.prefab	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/Assets/Prefabs/Character.prefab	(date 1650704741716)
+@@ -1,5 +1,36 @@
+ %YAML 1.1
+ %TAG !u! tag:unity3d.com,2011:
++--- !u!1 &2337205152496883
++GameObject:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  serializedVersion: 6
++  m_Component:
++  - component: {fileID: 8726290916287985981}
++  m_Layer: 0
++  m_Name: GroundCheck
++  m_TagString: Untagged
++  m_Icon: {fileID: 0}
++  m_NavMeshLayer: 0
++  m_StaticEditorFlags: 0
++  m_IsActive: 1
++--- !u!4 &8726290916287985981
++Transform:
++  m_ObjectHideFlags: 0
++  m_CorrespondingSourceObject: {fileID: 0}
++  m_PrefabInstance: {fileID: 0}
++  m_PrefabAsset: {fileID: 0}
++  m_GameObject: {fileID: 2337205152496883}
++  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
++  m_LocalPosition: {x: 0, y: -1, z: 0}
++  m_LocalScale: {x: 1, y: 1, z: 1}
++  m_ConstrainProportionsScale: 0
++  m_Children: []
++  m_Father: {fileID: 4972190345774320961}
++  m_RootOrder: 0
++  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+ --- !u!1 &4972190345774320963
+ GameObject:
+   m_ObjectHideFlags: 0
+@@ -31,7 +62,8 @@
+   m_LocalPosition: {x: 0, y: 0, z: 0}
+   m_LocalScale: {x: 1, y: 1, z: 1}
+   m_ConstrainProportionsScale: 0
+-  m_Children: []
++  m_Children:
++  - {fileID: 8726290916287985981}
+   m_Father: {fileID: 0}
+   m_RootOrder: 0
+   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+@@ -107,7 +139,7 @@
+   m_Interpolate: 0
+   m_SleepingMode: 1
+   m_CollisionDetection: 0
+-  m_Constraints: 0
++  m_Constraints: 4
+ --- !u!61 &2498933030712018395
+ BoxCollider2D:
+   m_ObjectHideFlags: 0
+@@ -146,3 +178,10 @@
+   m_Script: {fileID: 11500000, guid: 189f7786eceb345ec9c7cbd120201f1b, type: 3}
+   m_Name: 
+   m_EditorClassIdentifier: 
++  moveSpeed: 5
++  jumpForce: 25
++  groundMask:
++    serializedVersion: 2
++    m_Bits: 64
++  groundCheckPoint: {fileID: 8726290916287985981}
++  characterRigidBody: {fileID: 4675874897210873577}
+Index: Assets/Scripts/Character/IMove.cs.meta
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/Assets/Scripts/Character/IMove.cs.meta b/Assets/Scripts/Character/IMove.cs.meta
+new file mode 100644
+--- /dev/null	(date 1650704479039)
++++ b/Assets/Scripts/Character/IMove.cs.meta	(date 1650704479039)
+@@ -0,0 +1,3 @@
++fileFormatVersion: 2
++guid: 5ee9eb8d172b439eb464097d777453f6
++timeCreated: 1650704479
+\ No newline at end of file
+Index: ProjectSettings/TagManager.asset
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!78 &1\nTagManager:\n  serializedVersion: 2\n  tags: []\n  layers:\n  - Default\n  - TransparentFX\n  - Ignore Raycast\n  - \n  - Water\n  - UI\n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  - \n  m_SortingLayers:\n  - name: Default\n    uniqueID: 0\n    locked: 0\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ProjectSettings/TagManager.asset b/ProjectSettings/TagManager.asset
+--- a/ProjectSettings/TagManager.asset	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/ProjectSettings/TagManager.asset	(date 1650704166676)
+@@ -11,7 +11,7 @@
+   - 
+   - Water
+   - UI
+-  - 
++  - Ground
+   - 
+   - 
+   - 
+Index: ProjectSettings/Physics2DSettings.asset
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>%YAML 1.1\n%TAG !u! tag:unity3d.com,2011:\n--- !u!19 &1\nPhysics2DSettings:\n  m_ObjectHideFlags: 0\n  serializedVersion: 5\n  m_Gravity: {x: 0, y: -9.81}\n  m_DefaultMaterial: {fileID: 0}\n  m_VelocityIterations: 8\n  m_PositionIterations: 3\n  m_VelocityThreshold: 1\n  m_MaxLinearCorrection: 0.2\n  m_MaxAngularCorrection: 8\n  m_MaxTranslationSpeed: 100\n  m_MaxRotationSpeed: 360\n  m_BaumgarteScale: 0.2\n  m_BaumgarteTimeOfImpactScale: 0.75\n  m_TimeToSleep: 0.5\n  m_LinearSleepTolerance: 0.01\n  m_AngularSleepTolerance: 2\n  m_DefaultContactOffset: 0.01\n  m_JobOptions:\n    serializedVersion: 2\n    useMultithreading: 0\n    useConsistencySorting: 0\n    m_InterpolationPosesPerJob: 100\n    m_NewContactsPerJob: 30\n    m_CollideContactsPerJob: 100\n    m_ClearFlagsPerJob: 200\n    m_ClearBodyForcesPerJob: 200\n    m_SyncDiscreteFixturesPerJob: 50\n    m_SyncContinuousFixturesPerJob: 50\n    m_FindNearestContactsPerJob: 100\n    m_UpdateTriggerContactsPerJob: 100\n    m_IslandSolverCostThreshold: 100\n    m_IslandSolverBodyCostScale: 1\n    m_IslandSolverContactCostScale: 10\n    m_IslandSolverJointCostScale: 10\n    m_IslandSolverBodiesPerJob: 50\n    m_IslandSolverContactsPerJob: 50\n  m_SimulationMode: 0\n  m_QueriesHitTriggers: 1\n  m_QueriesStartInColliders: 1\n  m_CallbacksOnDisable: 1\n  m_ReuseCollisionCallbacks: 1\n  m_AutoSyncTransforms: 0\n  m_AlwaysShowColliders: 0\n  m_ShowColliderSleep: 1\n  m_ShowColliderContacts: 0\n  m_ShowColliderAABB: 0\n  m_ContactArrowScale: 0.2\n  m_ColliderAwakeColor: {r: 0.5686275, g: 0.95686275, b: 0.54509807, a: 0.7529412}\n  m_ColliderAsleepColor: {r: 0.5686275, g: 0.95686275, b: 0.54509807, a: 0.36078432}\n  m_ColliderContactColor: {r: 1, g: 0, b: 1, a: 0.6862745}\n  m_ColliderAABBColor: {r: 1, g: 1, b: 0, a: 0.2509804}\n  m_LayerCollisionMatrix: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ProjectSettings/Physics2DSettings.asset b/ProjectSettings/Physics2DSettings.asset
+--- a/ProjectSettings/Physics2DSettings.asset	(revision 753485565f4d4b990314167ac439d2acf3bf745a)
++++ b/ProjectSettings/Physics2DSettings.asset	(date 1650704166671)
+@@ -4,7 +4,7 @@
+ Physics2DSettings:
+   m_ObjectHideFlags: 0
+   serializedVersion: 5
+-  m_Gravity: {x: 0, y: -9.81}
++  m_Gravity: {x: 0, y: -19.62}
+   m_DefaultMaterial: {fileID: 0}
+   m_VelocityIterations: 8
+   m_PositionIterations: 3
