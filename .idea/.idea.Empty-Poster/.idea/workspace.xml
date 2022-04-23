@@ -1,95 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="40ea3e33-6022-4f12-990a-dec10f16656f" name="Changes" comment="">
+    <list default="true" id="40ea3e33-6022-4f12-990a-dec10f16656f" name="Changes" comment="Update: Character base">
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IJump.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IJump.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IMove.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/Character/IMove.cs.meta" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Empty-Poster/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Empty-Poster/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Blob/Textures/FeelBlobGodRays2.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsLightningAnimation.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsLightningAnimation.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsUI_Stormeye.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelCardsUI_Stormeye.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelSquareLightningAnimation.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/Art/FeelSquareLightningAnimation.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsOverlayGradient.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsOverlayGradient.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Back.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Back.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Background.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Background.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Inset.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Inset.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Logo.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/CardsUI/Textures/UI/FeelCardsUI_Logo.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckBackground.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckSmoke.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Duck/Sprites/FeelDuckSmoke.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoDustParticles.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoDustParticles.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoE2.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlack.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlack.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlackLight.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeBlackLight.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeWhite.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoEyeWhite.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoF.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoF.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoL.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoL.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth2.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth3.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth3.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth4.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth4.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth5.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth5.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth6.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth6.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth7.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth7.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth8.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoMouth8.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSing.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSing.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSpark.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoSpark.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoWind.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Letters/Sprites/FeelLettersDemoWind.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarCircle.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarCircle.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadial.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadial.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadialOutline.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/MMProgressBar/Sprites/FeelMMProgressBarRadialOutline.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUICar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUICar.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUIFront2.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUISnow2.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees2.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees2.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees3.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/ParallaxUI/Sprites/FeelParallaxUITrees3.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBackground.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBodyPart.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeBodyPart.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeDots.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeDots.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeFood.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/Snake/Sprites/FeelSnakeFood.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/_Common/Sprites/MMLogo.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemos/_Common/Sprites/MMLogo.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemosURP/Strike/Textures/FeelStrikeArrow.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/FeelDemosURP/Strike/Textures/FeelStrikeArrow.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemo1px.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemo1px.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoFaderMask.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoFaderMask.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoGhost.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Demos/MMFeedbacksDemo/Textures/FeedbacksDemoGhost.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowDown.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowDown.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowUp.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Resources/FeelArrowUp.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerButtonBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerButtonBackground.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerDotBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMFeedbacks/Editor/Sequencing/Resources/SequencerDotBackground.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackground.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackgroundUnlocked.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementBackgroundUnlocked.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementIcon.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMAchievements/Sprites/AchievementIcon.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMDebugOnScreen/Sprites/MMLogo16x16.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMDebugOnScreen/Sprites/MMLogo16x16.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMFaderRoundMask.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMFaderRoundMask.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMTools_GUI_1x1.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMGUI/Sprites/MMTools_GUI_1x1.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/LoadingProgressBar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/LoadingProgressBar.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/MoreMountainsLogo.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSceneLoading/Sprites/MoreMountainsLogo.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDude.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDude.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDudeHand.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMSprites/BezierLineRenderer/Demo/MMBezierLineRendererDemoDudeHand.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMTween/Demo/Textures/PlotterAxis.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMTween/Demo/Textures/PlotterAxis.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMVFX/MMPalette/MMLowPolyPalette.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/MMTools/Tools/MMVFX/MMPalette/MMLowPolyPalette.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/BallDemo/Sprites/NVBall.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/BallDemo/Sprites/NVBall.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCar.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCarWheel.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/DemoAssets/CarDemo/Sprites/NVCarWheel.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV1x1White.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV1x1White.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Cols.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Cols.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Dots.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV3Dots.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV7Dots.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NV7Dots.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVArrow.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVArrow.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVDottedPattern.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVDottedPattern.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVKnob.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVKnob.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoNice.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoNice.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoVibrations.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVLogoVibrations.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVPaginationDot.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVPaginationDot.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCorners.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCorners.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCornersBig.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVRoundedCornersBig.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchBackground.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchBackground.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchIndicator.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchIndicator.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchKnob.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVSwitchKnob.png.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVVerticalProgressBar.png.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Plugins/Feel/NiceVibrations/Demo/_Common/Sprites/NVVerticalProgressBar.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Prefabs/Character.prefab" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Prefabs/Character.prefab" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/CameraFollower.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/CameraFollower.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterBootstrap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterBootstrap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterMovement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Character/CharacterMovement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Infrastructure/Bootstrap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Infrastructure/Bootstrap.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/_Scenes/SampleScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/_Scenes/SampleScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/Physics2DSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Physics2DSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/TagManager.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -159,8 +84,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1650649661314</updated>
-      <workItem from="1650649673812" duration="3692000" />
+      <workItem from="1650649673812" duration="9834000" />
     </task>
+    <task id="LOCAL-00001" summary="Update: Character base">
+      <created>1650698747432</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1650698747433</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -182,5 +115,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Update: Character base" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update: Character base" />
   </component>
 </project>

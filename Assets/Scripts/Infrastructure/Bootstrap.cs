@@ -11,7 +11,7 @@ namespace Infrastructure
         private void Awake()
         {
             character.Init();
-            cameraFollower.FollowAndLookAt(character.transform);
+            cameraFollower.Follow(character.transform);
         }
     }
 }
