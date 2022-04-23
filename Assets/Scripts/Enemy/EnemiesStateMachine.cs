@@ -1,3 +1,4 @@
+using Character;
 using Infrastructure;
 using UnityEngine;
 
@@ -8,11 +9,15 @@ namespace Enemy
         [SerializeField] private EnemyAI[] enemies;
 
         private StateMachine _stateMachine;
-        public void Init(StateMachine stateMachine)
+        public void Init(StateMachine stateMachine, CharacterBootstrap characterBootstraper)
         {
             _stateMachine = stateMachine;
             // Should be changed to actual state machine
             _stateMachine.OnStateChanged += OnStateChanged;
+            foreach (var enemy in enemies)
+            {
+                enemy.characterAnimator = characterBootstraper.CharacterAnimator;
+            }
         }
 
         private void OnStateChanged(GameState gameState)

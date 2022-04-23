@@ -8,8 +8,8 @@ namespace Infrastructure
     {
         [SerializeField] private CharacterBootstrap character;
         [SerializeField] private CameraFollower cameraFollower;
-        [SerializeField] private StatePoint statePoint; 
-        [SerializeField] private EnemiesStateMachine enemiesStateMachine; 
+        [SerializeField] private StatePoint statePoint;
+        [SerializeField] private EnemiesStateMachine enemiesStateMachine;
 
         private StateMachine _stateMachine;
         private void Awake()
@@ -18,7 +18,7 @@ namespace Infrastructure
             statePoint.Init(_stateMachine);
             character.Init(_stateMachine);
             cameraFollower.Init(_stateMachine);
-            enemiesStateMachine.Init(_stateMachine);
+            enemiesStateMachine.Init(_stateMachine, character);
         }
     }
 }
