@@ -8,9 +8,11 @@ namespace Infrastructure
         [SerializeField] private CharacterBootstrap character;
         [SerializeField] private CameraFollower cameraFollower;
 
+        private State _state;
         private void Awake()
         {
-            character.Init();
+            _state = new State();
+            character.Init(_state);
             cameraFollower.Follow(character.transform);
         }
     }
