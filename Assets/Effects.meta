@@ -1,6 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Effects.meta
 guid: cf97acb401dd34ad584072b512af9360
 folderAsset: yes
+========
+guid: 3b746da7b40c860c894ce656f273a7de
+>>>>>>>> policeAI:Assets/Plugins/AstarPathfindingProject/Documentation/documentation.pdf.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

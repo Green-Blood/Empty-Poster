@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Sprites/Player.meta
 guid: 160e0915ca3997648b75edbc7d1472cc
+========
+guid: b52a4fa95b3eb714f8368a42197e1f7c
+>>>>>>>> policeAI:Assets/Examples.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
