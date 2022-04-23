@@ -174,10 +174,10 @@ MonoBehaviour:
   activateDistance: 10
   deactivateDistance: 15
   pathUpdateSeconds: 0.5
-  speed: 280
+  speed: 300
   nextWaypointDistance: 0.8
-  jumpNodeHeightRequirement: 0.6
-  jumpModifier: 0.53
+  jumpNodeHeightRequirement: 0.7
+  jumpModifier: 1.09
   jumpCheckOffset: 0.1
   followEnabled: 1
   jumpEnabled: 1
