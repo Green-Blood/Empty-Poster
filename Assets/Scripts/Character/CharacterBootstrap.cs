@@ -38,21 +38,21 @@ namespace Character
         private IState _currentState;
         private StateMachine _stateMachine;
 
-        private const float GroundCheckRadius = .2f;
+        private const float GroundCheckRadius = .1f;
 
         public void Init(StateMachine stateMachine)
         {
             _currentState = new CharacterIntroState();
             _stateMachine = stateMachine;
             CharacterMovement = new CharacterMovement(moveSpeed, characterRigidBody);
-            CharacterJump = new CharacterJump(jumpForce, characterRigidBody);
+            CharacterJump = new CharacterJump(jumpForce, characterRigidBody, characterAnimator);
             CharacterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
             CharacterFlip = new CharacterFlip(characterSprite);
         }
 
         private void FixedUpdate()
         {
-            _currentState.DoState(this, _stateMachine);
+            _currentState = _currentState.DoState(this, _stateMachine);
         }
 
         internal bool IsGrounded() => Physics2D.OverlapCircle(groundCheckPoint.position, GroundCheckRadius, groundMask);

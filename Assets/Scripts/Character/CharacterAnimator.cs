@@ -7,6 +7,8 @@ namespace Character
         private readonly Rigidbody2D _characterRigidBody;
         private readonly Animator _animator;
         private static readonly int MoveSpeed = Animator.StringToHash("MoveSpeed");
+        private static readonly int TakeSign = Animator.StringToHash("TakeSign");
+        private static readonly int ChaseStateTrigger = Animator.StringToHash("ChaseStateTrigger");
 
         public CharacterAnimator(Rigidbody2D characterRigidBody, Animator animator)
         {
@@ -19,9 +21,7 @@ namespace Character
             _animator.SetFloat(MoveSpeed, Mathf.Abs(_characterRigidBody.velocity.x));
         }
 
-        public void SetTransitionTrigger()
-        {
-            
-        }
+        public void SetTransitionTrigger() => _animator.SetTrigger(TakeSign);
+        public void SetChaseTrigger() => _animator.SetTrigger(ChaseStateTrigger);
     }
 }
