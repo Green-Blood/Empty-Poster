@@ -186,7 +186,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  activateDistance: 50
+  activateDistance: 5
+  deactivateDistance: 10
   pathUpdateSeconds: 0.5
   speed: 300
   nextWaypointDistance: 3
