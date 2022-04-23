@@ -18,5 +18,10 @@ namespace Character
         {
             _animator.SetFloat(MoveSpeed, Mathf.Abs(_characterRigidBody.velocity.x));
         }
+
+        public void SetTransitionTrigger()
+        {
+            
+        }
     }
 }
