@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -4447904424348394206, guid: 8a1f96c93a153e34a98b5f6dd6bbfebd, type: 3}
   m_Color: {r: 0.21568629, g: 0.21568629, b: 0.21568629, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.64, y: 0.64}
@@ -197,6 +197,7 @@ MonoBehaviour:
   followEnabled: 1
   jumpEnabled: 1
   directionLookEnabled: 1
+  gameoverDistance: 1
 --- !u!70 &8085934679154053300
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

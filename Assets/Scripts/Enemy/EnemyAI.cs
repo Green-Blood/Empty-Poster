@@ -24,6 +24,9 @@ public class EnemyAI : MonoBehaviour
     public bool jumpEnabled = true;
     public bool directionLookEnabled = true;
 
+    [Header("Game Over")]
+    public float gameoverDistance = 1f;
+
     private Path path;
     private int currentWaypoint = 0;
     RaycastHit2D isGrounded;
@@ -43,6 +46,12 @@ public class EnemyAI : MonoBehaviour
         if (TargetInDistance() && followEnabled)
         {
             PathFollow();
+            if (Vector2.Distance(transform.position, target.transform.position) < gameoverDistance)
+            {
+                // trigger game over (animation)
+                Debug.Log("gameover");
+                followEnabled = false;
+            }
         }
     }
 
