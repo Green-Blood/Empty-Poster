@@ -1,6 +1,5 @@
-using System;
 using Character;
-using Unity.VisualScripting;
+using Enemy;
 using UnityEngine;
 
 namespace Infrastructure
@@ -10,6 +9,7 @@ namespace Infrastructure
         [SerializeField] private CharacterBootstrap character;
         [SerializeField] private CameraFollower cameraFollower;
         [SerializeField] private StatePoint statePoint; 
+        [SerializeField] private EnemiesStateMachine enemiesStateMachine; 
 
         private StateMachine _stateMachine;
         private void Awake()
@@ -17,7 +17,8 @@ namespace Infrastructure
             _stateMachine = new StateMachine();
             statePoint.Init(_stateMachine);
             character.Init(_stateMachine);
-            cameraFollower.Follow(character.transform);
+            cameraFollower.Init(_stateMachine);
+            enemiesStateMachine.Init(_stateMachine);
         }
     }
 }
