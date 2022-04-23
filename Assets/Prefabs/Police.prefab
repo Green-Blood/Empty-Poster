@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 5912422872920668318}
   - component: {fileID: 1860054845523102965}
   - component: {fileID: 1198126149739634859}
-  m_Layer: 0
-  m_Name: EnemyAI
+  m_Layer: 8
+  m_Name: Police
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -170,19 +170,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a70469339128afd41aaf8f497647f5bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
-  activateDistance: 10
-  deactivateDistance: 15
-  pathUpdateSeconds: 0.5
   speed: 300
-  nextWaypointDistance: 0.8
-  jumpNodeHeightRequirement: 0.7
-  jumpModifier: 1.09
-  jumpCheckOffset: 0.1
-  followEnabled: 1
-  jumpEnabled: 1
-  directionLookEnabled: 1
+  allowRunning: 0
   gameoverDistance: 1
+  target: {fileID: 0}
 --- !u!70 &1198126149739634859
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

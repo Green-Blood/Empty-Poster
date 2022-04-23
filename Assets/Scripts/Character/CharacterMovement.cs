@@ -20,7 +20,7 @@ namespace Character
         {
             float axis = Input.GetAxisRaw(HorizontalAxis);
             _characterRigidBody.velocity =
-                new Vector2(axis * _moveSpeed, _characterRigidBody.velocity.y);
+                new Vector2(axis * _moveSpeed * Time.deltaTime, _characterRigidBody.velocity.y);
         }
     }
 }
