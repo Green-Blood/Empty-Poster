@@ -7,8 +7,10 @@ public class EnemyAI : MonoBehaviour
 {
     [Header("Pathfinding")]
     public Transform target;
-    public float activateDistance = 50f;
+    public float activateDistance = 5f;
+    public float deactivateDistance = 10f;
     public float pathUpdateSeconds = 0.5f;
+    private bool active;
 
     [Header("Physics")]
     public float speed = 200f;
@@ -108,7 +110,17 @@ public class EnemyAI : MonoBehaviour
 
     private bool TargetInDistance()
     {
-        return Vector2.Distance(transform.position, target.transform.position) < activateDistance;
+        if (active && Vector2.Distance(transform.position, target.transform.position) < deactivateDistance)
+        {
+            return true;
+        }
+        else if (!active && Vector2.Distance(transform.position, target.transform.position) < activateDistance)
+        {
+            active = true;
+            return true;
+        }
+        active = false;
+        return false;
     }
 
     private void OnPathComplete(Path p)
