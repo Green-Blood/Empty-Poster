@@ -31,31 +31,30 @@ namespace Character
 
         private bool _isGrounded;
 
-        private IMove _characterMovement;
-        private IJump _characterJump;
-        private CharacterAnimator _characterAnimator;
-        private IFlip _characterFlip;
+        internal IMove CharacterMovement;
+        internal IJump CharacterJump;
+        internal CharacterAnimator CharacterAnimator;
+        internal IFlip CharacterFlip;
+        private IState _currentState;
         private StateMachine _stateMachine;
 
         private const float GroundCheckRadius = .2f;
 
         public void Init(StateMachine stateMachine)
         {
+            _currentState = new CharacterIntroState();
             _stateMachine = stateMachine;
-            _characterMovement = new CharacterMovement(moveSpeed, characterRigidBody);
-            _characterJump = new CharacterJump(jumpForce, characterRigidBody, _stateMachine);
-            _characterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
-            _characterFlip = new CharacterFlip(characterSprite);
+            CharacterMovement = new CharacterMovement(moveSpeed, characterRigidBody);
+            CharacterJump = new CharacterJump(jumpForce, characterRigidBody);
+            CharacterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
+            CharacterFlip = new CharacterFlip(characterSprite);
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            _characterMovement.Move();
-            _characterJump.Jump(IsGrounded());
-            _characterAnimator.SetAnimation();
-            _characterFlip.TryFlip();
+            _currentState.DoState(this, _stateMachine);
         }
 
-        private bool IsGrounded() => Physics2D.OverlapCircle(groundCheckPoint.position, GroundCheckRadius, groundMask);
+        internal bool IsGrounded() => Physics2D.OverlapCircle(groundCheckPoint.position, GroundCheckRadius, groundMask);
     }
 }

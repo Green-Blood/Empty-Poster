@@ -3,10 +3,6 @@ using UnityEngine;
 
 namespace Infrastructure
 {
-    public abstract class State
-    {
-        
-    }
     public sealed class StateMachine
     {
         public GameState GameState { get; private set; }
