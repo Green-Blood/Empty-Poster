@@ -1978,6 +1978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e9ec3b210ab44a1b80adcf68687413d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  obstaclesTransform: {fileID: 845653590}
   startPoint: -14
   endPoint: -180
   minDistance: 3
@@ -3604,6 +3605,7 @@ MonoBehaviour:
   enemies:
   - {fileID: 1613611050}
   - {fileID: 342063512}
+  obstacles: []
 --- !u!1 &1771362476
 GameObject:
   m_ObjectHideFlags: 0
@@ -4412,6 +4414,9 @@ MonoBehaviour:
   enemiesStateMachine: {fileID: 1742326170}
   endScreen: {fileID: 267178740}
   finishScreen: {fileID: 267178746}
+  sounds: {fileID: 0}
+  sirenPoint: {fileID: 0}
+  randomizerScript: {fileID: 845653589}
 --- !u!1001 &4653429795132673094
 PrefabInstance:
   m_ObjectHideFlags: 0

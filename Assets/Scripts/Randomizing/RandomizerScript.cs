@@ -1,10 +1,16 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Infrastructure;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RandomizerScript : MonoBehaviour
 {
 
+    private StateMachine _stateMachine;
+
+    [SerializeField] private Transform obstaclesTransform;
     //The point at which objects may beginn to appear
     public float startPoint;
 
@@ -29,6 +35,21 @@ public class RandomizerScript : MonoBehaviour
 
     public int maxNumberOfObstacles;
 
+    public void Init(StateMachine stateMachine)
+    {
+        _stateMachine = stateMachine;
+        _stateMachine.OnStateChanged += OnStateChanged;
+    }
+
+    private void OnStateChanged(GameState state)
+    {
+        if (state == GameState.Intro)
+        {
+            DestroyAllObstacles();
+            Randomize();
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,15 +58,13 @@ public class RandomizerScript : MonoBehaviour
 
         Randomize();
     }
-
     public void DestroyAllObstacles()
     {
-       GameObject[] allObstacles = GameObject.FindGameObjectsWithTag("Obstacle");
-
-        for(int i = 0; i< allObstacles.Length; i++)
+        foreach (Transform child in obstaclesTransform)
         {
-            Destroy(allObstacles[i]);
+            Destroy(child.gameObject);
         }
+        
     }
 
     public void Randomize()
@@ -60,7 +79,7 @@ public class RandomizerScript : MonoBehaviour
 
             float positionX = Random.Range(Mathf.Min(lastPosition - currentMinDistance, lastPosition - minDistance), lastPosition - maxDistance);
 
-            Transform nextObstacle = Instantiate(obstacles[i]);
+            Transform nextObstacle = Instantiate(obstacles[i], obstaclesTransform);
 
 
             nextObstacle.position = new Vector2(positionX, nextObstacle.GetComponent<MinDistanceScript>().positionY);

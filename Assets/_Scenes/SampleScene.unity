@@ -4200,7 +4200,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1778193029
 Transform:
   m_ObjectHideFlags: 0
@@ -4628,6 +4628,60 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 2529771547102460205, guid: c7e47c4c010529144a569c31620cabe8, type: 3}
   m_PrefabInstance: {fileID: 1591578123}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2062284717
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2062284719}
+  - component: {fileID: 2062284718}
+  m_Layer: 0
+  m_Name: Randomizer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2062284718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062284717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e9ec3b210ab44a1b80adcf68687413d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obstaclesTransform: {fileID: 2062284719}
+  startPoint: -14
+  endPoint: -180
+  minDistance: 3
+  maxDistance: 20
+  obstacles:
+  - {fileID: 8340270378047731138, guid: 1ece2e65973036a429e2003eb1e1fe32, type: 3}
+  - {fileID: 8340270378047731138, guid: 6c9f12dcac509cb46ae8e13dc4563306, type: 3}
+  - {fileID: 8340270378047731138, guid: cd0da30d8793edd4e98bfbd59937c78d, type: 3}
+  maxNumberOfObstacles: 20
+--- !u!4 &2062284719
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2062284717}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -19.81801, y: 5.9963818, z: 0.045667313}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2070706946 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8340270378047731138, guid: cd0da30d8793edd4e98bfbd59937c78d, type: 3}
@@ -4882,6 +4936,7 @@ MonoBehaviour:
   finishScreen: {fileID: 267178746}
   sounds: {fileID: 341628749}
   sirenPoint: {fileID: 879609062}
+  randomizerScript: {fileID: 2062284718}
 --- !u!1001 &4653429795132673094
 PrefabInstance:
   m_ObjectHideFlags: 0

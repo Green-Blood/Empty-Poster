@@ -17,6 +17,7 @@ namespace Infrastructure
         [SerializeField] private FinishScreen finishScreen;
         [SerializeField] private Sounds.Sounds sounds;
         [SerializeField] private SirenPoint sirenPoint;
+        [SerializeField] private RandomizerScript randomizerScript;
 
         private StateMachine _stateMachine;
         private void Awake()
@@ -31,6 +32,7 @@ namespace Infrastructure
             finishScreen.Init(_stateMachine, cameraFollower);
             sounds.Init(_stateMachine);
             sirenPoint.Init(sounds);
+            randomizerScript.Init(_stateMachine);
         }
     }
 }
