@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 458862342}
   - component: {fileID: 7250832366464724436}
   - component: {fileID: 879740154299041321}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Animations
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -93,7 +93,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: a2e8443f896df124db3bbc9c71710248, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -114,10 +114,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8726290916287985981}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GroundCheck
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 4675874897210873577}
   - component: {fileID: 2498933030712018395}
   - component: {fileID: 70017987537348096}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -231,8 +231,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 189f7786eceb345ec9c7cbd120201f1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 4
-  jumpForce: 20
+  moveSpeedBeforeIntro: 200
+  moveSpeedAfterIntro: 300
+  jumpForce: 6
+  jumpTime: 0.35
+  hangTime: 0.2
   groundMask:
     serializedVersion: 2
     m_Bits: 64

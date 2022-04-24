@@ -1934,34 +1934,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 458862341, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 2337205152496883, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: m_Icon
-      value: 
-      objectReference: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
-    - target: {fileID: 2337205152496883, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: m_Layer
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 70017987537348096, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: jumpForce
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 70017987537348096, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: moveSpeedAfterIntro
-      value: 300
-      objectReference: {fileID: 0}
-    - target: {fileID: 70017987537348096, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: moveSpeedBeforeIntro
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 879740154299041321, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: m_SortingOrder
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 4972190345774320961, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -2009,10 +1981,6 @@ PrefabInstance:
     - target: {fileID: 4972190345774320963, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
       propertyPath: m_Name
       value: Character
-      objectReference: {fileID: 0}
-    - target: {fileID: 4972190345774320963, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
-      propertyPath: m_Layer
-      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ab4a6f03bbd564ec1a3378d16b886ba9, type: 3}
@@ -4045,7 +4013,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1993747180}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b9a305e18de0c04dbd257a21cd47087, type: 3}
   m_Name: 
@@ -4062,7 +4030,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1993747180}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
   m_Name: 
