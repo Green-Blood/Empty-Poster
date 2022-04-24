@@ -17,6 +17,7 @@ namespace Enemy
             foreach (var enemy in enemies)
             {
                 enemy.characterAnimator = characterBootstraper.CharacterAnimator;
+                enemy.target = characterBootstraper.characterRigidBody.transform;
             }
         }
 
@@ -25,7 +26,7 @@ namespace Enemy
             if (gameState != GameState.Chase) return;
             foreach (var enemy in enemies)
             {
-                enemy.followEnabled = true;
+                enemy.allowRunning = true;
             }
         }
     }
