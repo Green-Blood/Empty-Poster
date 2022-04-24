@@ -50,7 +50,9 @@ namespace Character
             CharacterJump = new CharacterJump(jumpForce, characterRigidBody, characterAnimator);
             CharacterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
             CharacterFlip = new CharacterFlip(characterSprite);
+            _stateMachine.OnStateChanged += OnStateChanged;
         }
+
 
         private void FixedUpdate()
         {
@@ -58,5 +60,16 @@ namespace Character
         }
 
         internal bool IsGrounded() => Physics2D.OverlapCircle(groundCheckPoint.position, GroundCheckRadius, groundMask);
+
+        private void OnStateChanged(GameState changedState)
+        {
+            _currentState = changedState switch
+            {
+                GameState.End => new CharacterEndState(),
+                GameState.Finish => new CharacterEndState(),
+                GameState.Intro => new CharacterIntroState(),
+                _ => _currentState
+            };
+        }
     }
 }

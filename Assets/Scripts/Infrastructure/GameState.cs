@@ -5,5 +5,7 @@ namespace Infrastructure
         Intro,
         Transition,
         Chase,
+        End,
+        Finish
     }
 }

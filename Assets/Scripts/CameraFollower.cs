@@ -45,4 +45,5 @@ public sealed class CameraFollower : MonoBehaviour
     }
 
     public void GameStart() => SwitchCameras(cinemachineCamera0, cinemachineCamera);
+    public void GameFinish() => SwitchCameras(cinemachineCamera, cinemachineCamera0);
 }

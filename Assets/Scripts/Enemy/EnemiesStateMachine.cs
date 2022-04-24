@@ -16,7 +16,7 @@ namespace Enemy
             _stateMachine.OnStateChanged += OnStateChanged;
             foreach (var enemy in enemies)
             {
-                enemy.characterAnimator = characterBootstraper.CharacterAnimator;
+                enemy.Init(characterBootstraper.CharacterAnimator, stateMachine);
                 enemy.target = characterBootstraper.characterRigidBody.transform;
             }
         }

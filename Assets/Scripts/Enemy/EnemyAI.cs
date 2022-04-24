@@ -1,5 +1,6 @@
 using UnityEngine;
 using Character;
+using Infrastructure;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -15,12 +16,19 @@ public class EnemyAI : MonoBehaviour
 
     Animator animator;
 
-    public CharacterAnimator characterAnimator;
+    private CharacterAnimator _characterAnimator;
+    private StateMachine _stateMachine;
 
     public void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+    }
+
+    public void Init(CharacterAnimator characterAnimator, StateMachine stateMachine)
+    {
+        _characterAnimator = characterAnimator;
+        _stateMachine = stateMachine;
     }
 
     private void FixedUpdate()
@@ -37,7 +45,7 @@ public class EnemyAI : MonoBehaviour
                 // trigger game over (animation)
                 allowRunning = false;
                 animator.SetTrigger("hit");
-                characterAnimator.SetIsFall();
+                _stateMachine.EndState();
             }
         }
     }
