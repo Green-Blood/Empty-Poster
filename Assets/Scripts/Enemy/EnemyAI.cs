@@ -4,9 +4,7 @@ using Infrastructure;
 
 public class EnemyAI : MonoBehaviour
 {
-
-    [Header("Physics")]
-    public float speed = 300f;
+    [Header("Physics")] public float speed = 300f;
     public bool allowRunning = false;
     public float gameoverDistance = 1f;
     public float jumpForce = 10f;
@@ -16,8 +14,9 @@ public class EnemyAI : MonoBehaviour
 
     Animator animator;
 
-    private CharacterAnimator _characterAnimator;
     private StateMachine _stateMachine;
+    private Vector3 _initialPosition;
+    private static readonly int CanRestart = Animator.StringToHash("CanRestart");
 
     public void Start()
     {
@@ -25,10 +24,10 @@ public class EnemyAI : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    public void Init(CharacterAnimator characterAnimator, StateMachine stateMachine)
+    public void Init(StateMachine stateMachine)
     {
-        _characterAnimator = characterAnimator;
         _stateMachine = stateMachine;
+        _initialPosition = transform.position;
     }
 
     private void FixedUpdate()
@@ -44,10 +43,20 @@ public class EnemyAI : MonoBehaviour
             {
                 // trigger game over (animation)
                 allowRunning = false;
+                animator.SetBool(CanRestart, false);
                 animator.SetTrigger("hit");
                 _stateMachine.EndState();
             }
         }
+    }
+
+    public void Restart()
+    {
+        allowRunning = false;
+        transform.position = _initialPosition;
+        rb.velocity = Vector2.zero;
+        animator.SetBool(CanRestart, true);
+        animator.SetFloat("running", 0);
     }
 
 

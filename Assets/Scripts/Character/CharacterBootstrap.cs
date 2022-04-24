@@ -41,6 +41,7 @@ namespace Character
         private StateMachine _stateMachine;
 
         private const float GroundCheckRadius = .1f;
+        private Vector3 _initialPosition;
 
         public void Init(StateMachine stateMachine)
         {
@@ -50,10 +51,15 @@ namespace Character
             CharacterJump = new CharacterJump(jumpForce, characterRigidBody, characterAnimator);
             CharacterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
             CharacterFlip = new CharacterFlip(characterSprite);
+            _initialPosition = transform.position;
             _stateMachine.OnStateChanged += OnStateChanged;
         }
 
-
+        private void Restart()
+        {
+            transform.position = _initialPosition;
+            CharacterAnimator.SetIsFall(false);
+        }
         private void FixedUpdate()
         {
             _currentState = _currentState.DoState(this, _stateMachine);
@@ -63,13 +69,24 @@ namespace Character
 
         private void OnStateChanged(GameState changedState)
         {
-            _currentState = changedState switch
+            switch (changedState)
             {
-                GameState.End => new CharacterEndState(),
-                GameState.Finish => new CharacterEndState(),
-                GameState.Intro => new CharacterIntroState(),
-                _ => _currentState
-            };
+                case GameState.End:
+                case GameState.Finish:
+                    _currentState = new CharacterEndState();
+                    break;
+                case GameState.Intro:
+                    _currentState = new CharacterIntroState();
+                    Restart();
+                    break;
+                case GameState.Transition:
+                    break;
+                case GameState.Chase:
+                    break;
+                default:
+                    _currentState = _currentState;
+                    break;
+            }
         }
     }
 }
