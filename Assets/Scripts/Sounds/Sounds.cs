@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using DG.Tweening;
 using Infrastructure;
+using MoreMountains.Feedbacks;
 using UnityEngine;
 
 namespace Sounds
@@ -12,6 +13,7 @@ namespace Sounds
         [SerializeField] private AudioSource impactSound;
         [SerializeField] private float fadeDuration = 1f;
         [SerializeField] private float endGameFadeDuration = 4f;
+        [SerializeField] private MMFeedbacks mmFeedbacks;
         private StateMachine _stateMachine;
         private List<AudioSource> _initialSources;
 
@@ -62,6 +64,7 @@ namespace Sounds
                     {
                         audioSource.DOFade(0, fadeDuration);
                     }
+                    mmFeedbacks.PlayFeedbacks();
 
 
                     break;
