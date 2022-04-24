@@ -6,7 +6,7 @@ namespace Character
     {
         public IState DoState(CharacterBootstrap characterBootstrap, StateMachine stateMachine)
         {
-            characterBootstrap.CharacterAnimator.SetIsFall();
+            characterBootstrap.CharacterAnimator.SetIsFall(true);
             return new CharacterEndState();
         }
     }

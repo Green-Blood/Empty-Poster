@@ -21,6 +21,6 @@ namespace Character
         public void SetAnimation() => _animator.SetFloat(MoveSpeed, Mathf.Abs(_characterRigidBody.velocity.x));
         public void SetTransitionTrigger() => _animator.SetTrigger(TakeSign);
         public void SetChaseTrigger() => _animator.SetTrigger(ChaseStateTrigger);
-        public void SetIsFall() => _animator.SetBool(IsFall, true);
+        public void SetIsFall(bool value) => _animator.SetBool(IsFall, value);
     }
 }

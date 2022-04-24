@@ -9,6 +9,7 @@ namespace Enemy
         [SerializeField] private EnemyAI[] enemies;
 
         private StateMachine _stateMachine;
+
         public void Init(StateMachine stateMachine, CharacterBootstrap characterBootstraper)
         {
             _stateMachine = stateMachine;
@@ -16,17 +17,33 @@ namespace Enemy
             _stateMachine.OnStateChanged += OnStateChanged;
             foreach (var enemy in enemies)
             {
-                enemy.Init(characterBootstraper.CharacterAnimator, stateMachine);
+                enemy.Init(stateMachine);
                 enemy.target = characterBootstraper.characterRigidBody.transform;
             }
         }
 
         private void OnStateChanged(GameState gameState)
         {
-            if (gameState != GameState.Chase) return;
-            foreach (var enemy in enemies)
+            switch (gameState)
             {
-                enemy.allowRunning = true;
+                case GameState.Chase:
+                {
+                    foreach (var enemy in enemies)
+                    {
+                        enemy.allowRunning = true;
+                    }
+
+                    break;
+                }
+                case GameState.Intro:
+                {
+                    foreach (var enemy in enemies)
+                    {
+                        enemy.Restart();
+                    }
+
+                    break;
+                }
             }
         }
     }
