@@ -9,6 +9,7 @@ namespace Sounds
     public class Sounds : MonoBehaviour
     {
         [SerializeField] private AudioSource[] audioSources;
+        [SerializeField] private AudioSource impactSound;
         [SerializeField] private float fadeDuration = 1f;
         private StateMachine _stateMachine;
         private List<AudioSource> _initialSources;
@@ -21,6 +22,7 @@ namespace Sounds
             {
                 _initialSources.Add(audio);
             }
+
             _stateMachine.OnStateChanged += OnStateChanged;
         }
 
@@ -41,22 +43,26 @@ namespace Sounds
                         {
                             audioSource.DOFade(0.05f, fadeDuration);
                             audioSource.gameObject.SetActive(false);
+                            impactSound.gameObject.SetActive(false);
                         }
-                        
                     }
 
                     audioSources[0].gameObject.SetActive(true);
                     break;
                 case GameState.Transition:
-                    audioSources[1].gameObject.SetActive(true);
+
                     break;
                 case GameState.Chase:
+                    audioSources[1].gameObject.SetActive(true);
                     break;
                 case GameState.End:
+                    impactSound.gameObject.SetActive(true);
                     foreach (var audioSource in audioSources)
                     {
                         audioSource.DOFade(0, fadeDuration);
                     }
+
+
                     break;
                 case GameState.Finish:
 
