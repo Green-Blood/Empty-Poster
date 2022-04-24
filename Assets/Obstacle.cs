@@ -11,8 +11,6 @@ public class Obstacle : MonoBehaviour
     public void Start()
     {
         destory = GetComponent<ParticleSystem>();
-        // gameObject1 = GetComponentInChildren<GameObject>();
-
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -36,6 +34,4 @@ public class Obstacle : MonoBehaviour
         IsHidden = false;
         gameObject1.SetActive(true);
     }
-
-
 }
