@@ -11,6 +11,7 @@ namespace Sounds
         [SerializeField] private AudioSource[] audioSources;
         [SerializeField] private AudioSource impactSound;
         [SerializeField] private float fadeDuration = 1f;
+        [SerializeField] private float endGameFadeDuration = 4f;
         private StateMachine _stateMachine;
         private List<AudioSource> _initialSources;
 
@@ -66,7 +67,10 @@ namespace Sounds
                     break;
                 case GameState.Finish:
 
-                    audioSources[1].DOFade(0, fadeDuration);
+                    foreach (var audioSource in audioSources)
+                    {
+                        audioSource.DOFade(0, endGameFadeDuration);
+                    }
                     audioSources[2].gameObject.SetActive(true);
                     break;
                 default:

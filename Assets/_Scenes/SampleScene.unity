@@ -847,6 +847,7 @@ MonoBehaviour:
   - {fileID: 26167746}
   impactSound: {fileID: 1724675497}
   fadeDuration: 3
+  endGameFadeDuration: 12
 --- !u!1001 &342063509
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -872,7 +873,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: speed
-      value: 311
+      value: 302
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: target
@@ -2280,7 +2281,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8968404330215292966, guid: 278aa6b8e205945a2ad38ca51b2229fa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -133.7
+      value: -147.7
       objectReference: {fileID: 0}
     - target: {fileID: 8968404330215292966, guid: 278aa6b8e205945a2ad38ca51b2229fa, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3311,7 +3312,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: speed
-      value: 310
+      value: 301
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: target
