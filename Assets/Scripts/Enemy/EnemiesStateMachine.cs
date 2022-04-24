@@ -46,10 +46,8 @@ namespace Enemy
                 }
                 case GameState.Transition:
                 {
-                    foreach (var enemy in enemies)
-                    {
-                        StartCoroutine(enemy.StartTransitionAnimationWithDelay());
-                    }
+                    StartCoroutine(enemies[0].StartTransitionAnimationWithDelay());
+
 
                     break;
                 }
