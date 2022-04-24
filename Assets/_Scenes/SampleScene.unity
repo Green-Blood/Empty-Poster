@@ -706,7 +706,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: speed
-      value: 300
+      value: 311
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: target
@@ -3027,7 +3027,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: speed
-      value: 300
+      value: 310
       objectReference: {fileID: 0}
     - target: {fileID: 1860054845523102965, guid: 95125740013085446b551cacf8448ed5, type: 3}
       propertyPath: target
@@ -4372,14 +4372,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1278047812660188402, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.9811321
       objectReference: {fileID: 0}
     - target: {fileID: 1278047812660188402, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: m_Color.g
-      value: 1
+      value: 0.9811321
       objectReference: {fileID: 0}
     - target: {fileID: 1278047812660188402, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: m_Color.r
+      value: 0.9579922
+      objectReference: {fileID: 0}
     - target: {fileID: 1553939221502499898, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: firstDelay
       value: 2.8
@@ -4399,6 +4401,10 @@ PrefabInstance:
     - target: {fileID: 1553939221502499898, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: panelFadeDuration
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4283105227100507176, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_text
+      value: Some time later...
       objectReference: {fileID: 0}
     - target: {fileID: 4653429793744679992, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: cameraFollower
