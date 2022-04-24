@@ -12,8 +12,14 @@ namespace Infrastructure
             GameState++;
             OnStateChanged?.Invoke(GameState);
         }
+        public void SetState(GameState stateToChange)
+        {
+            GameState = stateToChange;
+            OnStateChanged?.Invoke(GameState);
+        }
         public void EndState()
         {
+            if(GameState == GameState.Finish) return;
             GameState = GameState.End;
             OnStateChanged?.Invoke(GameState);
         }

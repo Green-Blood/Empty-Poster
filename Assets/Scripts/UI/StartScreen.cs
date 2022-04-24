@@ -8,15 +8,15 @@ namespace UI
 {
     public sealed class StartScreen : MonoBehaviour
     {
-        [Title("Parameters")]
-        [SerializeField] private float titleFadeDuration = 1.5f;
+        [Title("Parameters")] [SerializeField] private float titleFadeDuration = 1.5f;
         [SerializeField] private float pressFadeDuration = 1.25f;
         [SerializeField] private float fadeOutDuration = 0.75f;
         [SerializeField] private float pulseDuration = 0.65f;
         [SerializeField] private float pulseScaleValue = 1.1f;
 
-        [Header("References")]
-        [SerializeField] private TextMeshProUGUI titleText;
+        [Header("References")] [SerializeField]
+        private TextMeshProUGUI titleText;
+
         [SerializeField] private TextMeshProUGUI pressText;
         [SerializeField] private GameObject pressButton;
         [SerializeField] private CameraFollower cameraFollower;
@@ -49,15 +49,14 @@ namespace UI
 
         public void StartPulsing()
         {
-            pressText.transform.DOScale(new Vector3(pulseScaleValue, pulseScaleValue, 0), pulseDuration).SetLoops(-1, LoopType.Yoyo);
+            pressText.transform.DOScale(new Vector3(pulseScaleValue, pulseScaleValue, 0), pulseDuration)
+                .SetLoops(-1, LoopType.Yoyo);
         }
 
         public void OnPressClicked()
         {
-            Debug.Log("Pressed1");
             ResetValues(fadeOutDuration, () =>
             {
-                Debug.Log("Pressed");
                 startPanel.gameObject.SetActive(false);
                 cameraFollower.GameStart();
             });
