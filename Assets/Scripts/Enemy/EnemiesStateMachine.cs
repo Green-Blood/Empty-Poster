@@ -10,6 +10,8 @@ namespace Enemy
 
         private StateMachine _stateMachine;
 
+        [SerializeField] private Obstacle[] obstacles;
+
         public void Init(StateMachine stateMachine, CharacterBootstrap characterBootstraper)
         {
             _stateMachine = stateMachine;
@@ -27,30 +29,33 @@ namespace Enemy
             switch (gameState)
             {
                 case GameState.Chase:
-                {
-                    foreach (var enemy in enemies)
                     {
-                        enemy.allowRunning = true;
-                    }
+                        foreach (var enemy in enemies)
+                        {
+                            enemy.allowRunning = true;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case GameState.Intro:
-                {
-                    foreach (var enemy in enemies)
                     {
-                        enemy.Restart();
+                        foreach (var enemy in enemies)
+                        {
+                            enemy.Restart();
+                        }
+                        foreach (Obstacle obstacle in obstacles)
+                        {
+                            obstacle.Show();
+                        }
+                        break;
                     }
-
-                    break;
-                }
                 case GameState.Transition:
-                {
-                    StartCoroutine(enemies[0].StartTransitionAnimationWithDelay());
+                    {
+                        StartCoroutine(enemies[0].StartTransitionAnimationWithDelay());
 
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
     }
