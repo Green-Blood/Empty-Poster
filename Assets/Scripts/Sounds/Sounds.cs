@@ -35,10 +35,12 @@ namespace Sounds
                         if (index == 0)
                         {
                             audioSource.DOFade(0.04f, fadeDuration);
+                            audioSource.gameObject.SetActive(true);
                         }
                         else
                         {
                             audioSource.DOFade(0.05f, fadeDuration);
+                            audioSource.gameObject.SetActive(false);
                         }
                         
                     }
