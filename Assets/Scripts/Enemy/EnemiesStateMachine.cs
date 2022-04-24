@@ -44,6 +44,15 @@ namespace Enemy
 
                     break;
                 }
+                case GameState.Transition:
+                {
+                    foreach (var enemy in enemies)
+                    {
+                        StartCoroutine(enemy.StartTransitionAnimationWithDelay());
+                    }
+
+                    break;
+                }
             }
         }
     }
