@@ -58,6 +58,7 @@ namespace UI
                 StartCoroutine(RestartGameWithDelay());
             });
         }
+
         private void StartGameBeginAnimations()
         {
             gamePanel.DOFade(0f, panelFadeDuration);
@@ -66,12 +67,13 @@ namespace UI
                 gamePanel.gameObject.SetActive(false);
             });
         }
+
         private IEnumerator RestartGameWithDelay()
         {
+            _stateMachine.BeginState();
             yield return new WaitForSeconds(firstDelay);
             StartGameBeginAnimations();
             _cameraFollower.GameStart();
-            _stateMachine.BeginState();
         }
     }
 }
