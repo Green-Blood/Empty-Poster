@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using Character;
 using Infrastructure;
@@ -17,6 +18,7 @@ public class EnemyAI : MonoBehaviour
     private StateMachine _stateMachine;
     private Vector3 _initialPosition;
     private static readonly int CanRestart = Animator.StringToHash("CanRestart");
+    private static readonly int IntroTrigger = Animator.StringToHash("IntroTrigger");
 
     public void Start()
     {
@@ -57,6 +59,12 @@ public class EnemyAI : MonoBehaviour
         rb.velocity = Vector2.zero;
         animator.SetBool(CanRestart, true);
         animator.SetFloat("running", 0);
+    }
+
+    public IEnumerator StartTransitionAnimationWithDelay()
+    {
+        yield return new WaitForSeconds(3f);
+        animator.SetTrigger(IntroTrigger);
     }
 
 
