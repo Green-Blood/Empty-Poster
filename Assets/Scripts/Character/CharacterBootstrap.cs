@@ -1,3 +1,4 @@
+using System;
 using Infrastructure;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace Character
 
         [TabGroup("Parameters")] [SerializeField]
         internal float jumpForce;
+        [TabGroup("Parameters")] [SerializeField]
+        internal float jumpTime = 0.35f;
 
         [TabGroup("Parameters")] [SerializeField]
         internal LayerMask groundMask;
@@ -42,13 +45,14 @@ namespace Character
 
         private const float GroundCheckRadius = .1f;
         private Vector3 _initialPosition;
+        internal bool CanMove = true;
 
         public void Init(StateMachine stateMachine)
         {
             _currentState = new CharacterIntroState();
             _stateMachine = stateMachine;
             CharacterMovement = new CharacterMovement(moveSpeedBeforeIntro, characterRigidBody);
-            CharacterJump = new CharacterJump(jumpForce, characterRigidBody, characterAnimator);
+            CharacterJump = new CharacterJump(jumpForce, jumpTime, characterRigidBody, characterAnimator);
             CharacterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
             CharacterFlip = new CharacterFlip(characterSprite);
             _initialPosition = transform.position;
@@ -60,9 +64,16 @@ namespace Character
             transform.position = _initialPosition;
             CharacterAnimator.SetIsFall(false);
         }
-        private void FixedUpdate()
+
+        private void Update()
         {
             _currentState = _currentState.DoState(this, _stateMachine);
+        }
+
+        private void FixedUpdate()
+        {
+            if(!CanMove) return;
+            CharacterMovement.Move();
         }
 
         internal bool IsGrounded() => Physics2D.OverlapCircle(groundCheckPoint.position, GroundCheckRadius, groundMask);
@@ -74,14 +85,18 @@ namespace Character
                 case GameState.End:
                 case GameState.Finish:
                     _currentState = new CharacterEndState();
+                    CanMove = false;
                     break;
                 case GameState.Intro:
                     _currentState = new CharacterIntroState();
                     Restart();
+                    CanMove = true;
                     break;
                 case GameState.Transition:
+                    CanMove = false;
                     break;
                 case GameState.Chase:
+                    CanMove = true;
                     break;
                 default:
                     _currentState = _currentState;

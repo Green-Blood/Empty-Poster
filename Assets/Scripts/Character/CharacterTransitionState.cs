@@ -1,5 +1,4 @@
 using Infrastructure;
-using UnityEngine;
 
 namespace Character
 {
@@ -8,7 +7,6 @@ namespace Character
         private bool _isTriggered;
         public IState DoState(CharacterBootstrap characterBootstrap, StateMachine stateMachine)
         {
-            Debug.Log("CharacterTransitionstate");
             if (!_isTriggered)
             {
                 characterBootstrap.CharacterAnimator.SetTransitionTrigger();

@@ -7,7 +7,6 @@ namespace Character
     {
         public IState DoState(CharacterBootstrap characterBootstrap, StateMachine stateMachine)
         {
-            characterBootstrap.CharacterMovement.Move();
             characterBootstrap.CharacterAnimator.SetAnimation();
             characterBootstrap.CharacterFlip.TryFlip();
 

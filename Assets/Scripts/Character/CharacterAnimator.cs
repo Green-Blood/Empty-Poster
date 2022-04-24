@@ -11,6 +11,7 @@ namespace Character
         private static readonly int TakeSign = Animator.StringToHash("TakeSign");
         private static readonly int ChaseStateTrigger = Animator.StringToHash("ChaseStateTrigger");
         private static readonly int IsFall = Animator.StringToHash("IsFall");
+        private static readonly int IsJump = Animator.StringToHash("IsJump");
 
         public CharacterAnimator(Rigidbody2D characterRigidBody, Animator animator)
         {
@@ -22,5 +23,6 @@ namespace Character
         public void SetTransitionTrigger() => _animator.SetTrigger(TakeSign);
         public void SetChaseTrigger() => _animator.SetTrigger(ChaseStateTrigger);
         public void SetIsFall(bool value) => _animator.SetBool(IsFall, value);
+        public void StopJump() => _animator.SetBool(IsJump, false);
     }
 }
