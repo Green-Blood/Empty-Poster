@@ -1144,7 +1144,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 4dc9f963c9f8b45b488bb19c877d173c, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.02
   m_Pitch: 1
   Loop: 0
@@ -2757,7 +2757,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: e00a19412ba74401fb5867b2b8517966, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 0.064
   m_Pitch: 1
   Loop: 0
@@ -4380,7 +4380,25 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1278047812660188402, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: m_Color.r
+    - target: {fileID: 1553939221502499898, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: firstDelay
+      value: 2.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1553939221502499898, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: textFadeDelay
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1553939221502499898, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: panelFadeValue
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1553939221502499898, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: textFadeDuration
+      value: 2.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1553939221502499898, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: panelFadeDuration
+      value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 4653429793744679992, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: cameraFollower
@@ -4473,6 +4491,70 @@ PrefabInstance:
     - target: {fileID: 4653429793744679999, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
       propertyPath: m_Name
       value: Canvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429793802709370, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColor.b
+      value: 0.22583659
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429793802709370, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColor.g
+      value: 0.23685543
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429793802709370, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.2735849
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429793802709370, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4282006598
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.topLeft.b
+      value: 0.37659204
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.topLeft.g
+      value: 0.3764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.topLeft.r
+      value: 0.3882353
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.topRight.b
+      value: 0.37659204
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.topRight.g
+      value: 0.3764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.topRight.r
+      value: 0.3882353
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.bottomLeft.b
+      value: 0.2901961
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.bottomLeft.g
+      value: 0.3019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.bottomLeft.r
+      value: 0.3372549
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.bottomRight.b
+      value: 0.2901961
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.bottomRight.g
+      value: 0.3019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 4653429794768239447, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
+      propertyPath: m_fontColorGradient.bottomRight.r
+      value: 0.3372549
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 545a0478c6ea7458abaa7bfd052519b1, type: 3}
