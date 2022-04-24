@@ -5,6 +5,7 @@ using UnityEngine;
 
 public sealed class CameraFollower : MonoBehaviour
 {
+    [SerializeField] private CinemachineVirtualCamera cinemachineCamera0;
     [SerializeField] private CinemachineVirtualCamera cinemachineCamera;
     [SerializeField] private CinemachineVirtualCamera cinemachineCamera2;
     [SerializeField] private float waitTime = 5f;
@@ -31,11 +32,17 @@ public sealed class CameraFollower : MonoBehaviour
     private IEnumerator FollowForTime()
     {
         yield return new WaitForSeconds(delayTime);
-        cinemachineCamera.gameObject.SetActive(false);
-        cinemachineCamera2.gameObject.SetActive(true);
+        SwitchCameras(cinemachineCamera, cinemachineCamera2);
         yield return new WaitForSeconds(waitTime);
-        cinemachineCamera2.gameObject.SetActive(false);
-        cinemachineCamera.gameObject.SetActive(true);
+        SwitchCameras(cinemachineCamera2, cinemachineCamera);
         _stateMachine.NextState();
     }
+
+    private void SwitchCameras(CinemachineVirtualCamera cameraToHide, CinemachineVirtualCamera cameraToShow)
+    {
+        cameraToHide.gameObject.SetActive(false);
+        cameraToShow.gameObject.SetActive(true);
+    }
+
+    public void GameStart() => SwitchCameras(cinemachineCamera0, cinemachineCamera);
 }
