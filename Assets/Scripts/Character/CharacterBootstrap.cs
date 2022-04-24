@@ -87,6 +87,9 @@ namespace Character
             switch (changedState)
             {
                 case GameState.End:
+                    _currentState = new CharacterFinishState();
+                    CanMove = false;
+                    break;
                 case GameState.Finish:
                     _currentState = new CharacterEndState();
                     CanMove = false;

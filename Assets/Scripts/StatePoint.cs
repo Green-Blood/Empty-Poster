@@ -5,6 +5,8 @@ namespace Infrastructure
 {
     public sealed class StatePoint : MonoBehaviour
     {
+        [SerializeField] private GameState stateToChange;
+        
         private bool _isChanged;
         private StateMachine _stateMachine;
 
@@ -26,7 +28,7 @@ namespace Infrastructure
         {
             if (_isChanged) return;
             if (!other.TryGetComponent(out CharacterBootstrap character)) return;
-            _stateMachine.NextState();
+            _stateMachine.SetState(stateToChange);
             _isChanged = true;
         }
     }
