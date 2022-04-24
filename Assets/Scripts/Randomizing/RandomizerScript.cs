@@ -38,6 +38,16 @@ public class RandomizerScript : MonoBehaviour
         Randomize();
     }
 
+    public void DestroyAllObstacles()
+    {
+       GameObject[] allObstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+
+        for(int i = 0; i< allObstacles.Length; i++)
+        {
+            Destroy(allObstacles[i]);
+        }
+    }
+
     public void Randomize()
     {
         bool randomize = true;
