@@ -8,6 +8,7 @@ public class EnemyAI : MonoBehaviour
     public float speed = 300f;
     public bool allowRunning = false;
     public float gameoverDistance = 1f;
+    public float jumpForce = 10f;
     public Transform target;
 
     Rigidbody2D rb;
@@ -39,5 +40,12 @@ public class EnemyAI : MonoBehaviour
                 characterAnimator.SetIsFall();
             }
         }
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (!other.TryGetComponent(out ObstacleJump enemy)) return;
+        rb.AddForce(new Vector2(rb.velocity.y, jumpForce), ForceMode2D.Impulse);
     }
 }
