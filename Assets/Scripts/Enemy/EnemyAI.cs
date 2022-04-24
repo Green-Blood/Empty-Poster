@@ -27,13 +27,10 @@ public class EnemyAI : MonoBehaviour
         if (allowRunning)
         {
             // Movement
-            Vector2 force = Vector2.left * speed * Time.deltaTime;
+            Vector2 force = new Vector2(-1f * speed * Time.deltaTime, rb.velocity.y);
             float velocityX = Mathf.Abs(rb.velocity.x);
             animator.SetFloat("running", velocityX);
-            if (velocityX < Mathf.Abs(force.x))
-            {
-                rb.AddForce(force);
-            }
+            rb.velocity = force;
             if (Vector2.Distance(transform.position, target.transform.position) < gameoverDistance)
             {
                 // trigger game over (animation)
