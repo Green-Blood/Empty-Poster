@@ -15,8 +15,12 @@ namespace Character
 
         [TabGroup("Parameters")] [SerializeField]
         internal float jumpForce;
+
         [TabGroup("Parameters")] [SerializeField]
         internal float jumpTime = 0.35f;
+
+        [TabGroup("Parameters")] [SerializeField]
+        internal float hangTime = 0.2f;
 
         [TabGroup("Parameters")] [SerializeField]
         internal LayerMask groundMask;
@@ -52,7 +56,7 @@ namespace Character
             _currentState = new CharacterIntroState();
             _stateMachine = stateMachine;
             CharacterMovement = new CharacterMovement(moveSpeedBeforeIntro, characterRigidBody);
-            CharacterJump = new CharacterJump(jumpForce, jumpTime, characterRigidBody, characterAnimator);
+            CharacterJump = new CharacterJump(jumpForce, jumpTime, hangTime, characterRigidBody, characterAnimator);
             CharacterAnimator = new CharacterAnimator(characterRigidBody, characterAnimator);
             CharacterFlip = new CharacterFlip(characterSprite);
             _initialPosition = transform.position;
@@ -72,7 +76,7 @@ namespace Character
 
         private void FixedUpdate()
         {
-            if(!CanMove) return;
+            if (!CanMove) return;
             CharacterMovement.Move();
         }
 
