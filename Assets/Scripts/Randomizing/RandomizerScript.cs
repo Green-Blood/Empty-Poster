@@ -77,7 +77,7 @@ public class RandomizerScript : MonoBehaviour
             int i = Random.Range(0, obstacles.Length);
 
 
-            float positionX = Random.Range(Mathf.Min(lastPosition - currentMinDistance, lastPosition - minDistance), lastPosition - maxDistance);
+            float positionX = Random.Range(lastPosition - maxDistance, Mathf.Min(lastPosition - currentMinDistance, lastPosition - minDistance));
 
             Transform nextObstacle = Instantiate(obstacles[i], obstaclesTransform);
 

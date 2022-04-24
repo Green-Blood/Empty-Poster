@@ -4988,7 +4988,7 @@ MonoBehaviour:
   - {fileID: 8340270378047731138, guid: 1ece2e65973036a429e2003eb1e1fe32, type: 3}
   - {fileID: 8340270378047731138, guid: 6c9f12dcac509cb46ae8e13dc4563306, type: 3}
   - {fileID: 8340270378047731138, guid: cd0da30d8793edd4e98bfbd59937c78d, type: 3}
-  maxNumberOfObstacles: 20
+  maxNumberOfObstacles: 30
 --- !u!4 &2062284719
 Transform:
   m_ObjectHideFlags: 0
